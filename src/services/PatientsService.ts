@@ -32,4 +32,13 @@ export class PatientsService {
 
     return response.data;
   }
+
+  public static async fetchSinglePatient(id : number) : Promise<Patient> {
+    const response = await apiClient.request({
+      url: `/patients/${id}`,
+      method: "GET"
+    });
+
+    return response.data;
+  }
 }
