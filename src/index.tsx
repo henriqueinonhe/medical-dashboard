@@ -1,9 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
-function App() : JSX.Element {
-  return <>Hello World!</>;
-}
+import { App } from "./App";
 
 const body = document.querySelector("body")!;
 const rootNode = document.createElement("div")!;
