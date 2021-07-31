@@ -27,7 +27,6 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
     vertical-align: baseline;
   }
   /* HTML5 display-role reset for older browsers */
@@ -54,11 +53,16 @@ const GlobalStyles = createGlobalStyle`
     border-spacing: 0;
   }
 
+  html, body, #root {
+    height: 100%
+  }
+
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial;
+    font-family: "Arial";
+    color: #333;
   }
 `;
 
