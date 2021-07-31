@@ -4,3 +4,4 @@ cypress/screenshots
 cypress/downloads
 public
 todo.txt
+.env
