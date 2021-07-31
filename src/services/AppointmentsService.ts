@@ -1,3 +1,4 @@
+import { apiClient } from "../helpers/apiHelper";
 import { Patient } from "./PatientsService";
 
 export type AppointmentType = "firstVisit" | "followUp" |
@@ -51,4 +52,13 @@ export class AppointmentsService {
     completed: "Completed",
     pending: "Pending"
   };
+
+  public static async fetchRawAppointments() : Promise<Array<RawAppointment>> {
+    const response = await apiClient.request({
+      url: "/appointments",
+      method: "GET"
+    });
+
+    return response.data;
+  }
 }
