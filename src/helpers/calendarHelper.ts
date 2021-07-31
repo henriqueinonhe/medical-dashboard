@@ -69,3 +69,11 @@ export function computeAvailableTimes(minTime : AllowedTime, maxTime : AllowedTi
 
   return allowedTimes().slice(minTimeIndex, maxTimeIndex + 1);
 }
+
+/**
+ * Formats time string so that it can be used as a
+ * row name in a CSS grid
+ */
+export function formatAllowedTime(time : AllowedTime) : string {
+  return `time${time.replace(":", "")}`;
+}
