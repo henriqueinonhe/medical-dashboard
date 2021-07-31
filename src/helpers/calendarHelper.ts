@@ -1,3 +1,5 @@
+import Dayjs from "./dayjs";
+
 export type Weekday = "sunday" | "monday" | "tuesday" | "wednesday" |
                "thursday" | "friday" | "saturday";
 
@@ -76,4 +78,12 @@ export function computeAvailableTimes(minTime : AllowedTime, maxTime : AllowedTi
  */
 export function formatAllowedTime(time : AllowedTime) : string {
   return `time${time.replace(":", "")}`;
+}
+
+export function dateToAllowedTime(date : string) : AllowedTime {
+  return Dayjs(date).format("HH:mm") as AllowedTime;
+}
+
+export function dateToWeekday(date : string) : Weekday {
+  return weekdays()[Dayjs(date).day()];
 }
