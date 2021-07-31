@@ -3,8 +3,10 @@ import styled from "styled-components";
 import Joi from "joi";
 import { LogicError } from "../exceptions/LogicError";
 import { capitalize } from "lodash";
-import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays, computeAvailableTimes, formatAllowedTime } from "../helpers/calendarHelper";
+import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays, computeAvailableTimes, formatAllowedTime, dateToAllowedTime, dateToWeekday } from "../helpers/calendarHelper";
 import { AppointmentCard } from "./AppointmentCard";
+import { Appointment } from "../services/AppointmentsService";
+import Dayjs from "dayjs";
 
 const Container = styled.div`
   min-width: 700px;
@@ -101,7 +103,7 @@ function validateAppointmentCalendarProps(props : AppointmentsCalendarProps) : v
     maxTime: Joi.string()
       .valid(...allowedTimes())
       .required()
-  }).required();
+  }).required().unknown();
 
   const { error } = schema.validate(props);
 
@@ -112,23 +114,65 @@ function validateAppointmentCalendarProps(props : AppointmentsCalendarProps) : v
   }
 }
 
+function renderAppointmentsCards(currentDate : Dayjs.Dayjs, appointments : Array<Appointment>) : React.ReactNode {
+  const currentDateFirstWeekDay = currentDate.day(0);
+  const currentDateLastWeekDay = currentDate.day(6);
+  const currentDateWeekAppointments = appointments.filter(appointment => 
+    Dayjs(appointment.startTime).isBetween(currentDateFirstWeekDay, currentDateLastWeekDay));
+
+  return currentDateWeekAppointments.map(appointment => {
+    const {
+      id,
+      startTime,
+      endTime,
+      patient,
+      description,
+      type,
+      status
+    } = appointment;
+
+    const weekday = dateToWeekday(startTime);
+    const formattedStartTime = dateToAllowedTime(startTime);
+    const formattedEndTime = endTime ? 
+      dateToAllowedTime(endTime) : 
+      dateToAllowedTime(Dayjs(startTime).add(30, "minutes").toISOString());
+
+    return (
+      <AppointmentCard 
+        key={id}
+        weekday={weekday}
+        startTime={formattedStartTime}
+        endTime={formattedEndTime}
+        patientName={patient.name}
+        description={description}
+        type={type}
+        status={status}
+      />
+    );
+  });
+}
+
 export interface AppointmentsCalendarProps {
   minTime : AllowedTime;
   maxTime : AllowedTime;
   minWeekday : Weekday;
   maxWeekday : Weekday;
+  currentDate : Dayjs.Dayjs;
+  appointments : Array<Appointment>;
 }
 
 //TODO Documentation
 export const AppointmentsCalendar = React.memo((props : AppointmentsCalendarProps) => {
+  validateAppointmentCalendarProps(props);
+
   const {
     minWeekday,
     maxWeekday,
     minTime,
-    maxTime
+    maxTime,
+    currentDate,
+    appointments
   } = props;
-
-  validateAppointmentCalendarProps(props);
 
   const availableWeekdays = computeAvailableWeekdays(minWeekday, maxWeekday);
   const availableTimes = computeAvailableTimes(minTime, maxTime);
@@ -171,11 +215,8 @@ export const AppointmentsCalendar = React.memo((props : AppointmentsCalendarProp
               />))
         }
 
-        <AppointmentCard 
-          weekday="thursday"
-          startTime="09:30"
-          endTime="10:30"
-        />
+        {renderAppointmentsCards(currentDate, appointments)}
+
       </Grid>
     </Container>
   );

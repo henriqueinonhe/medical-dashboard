@@ -4,17 +4,17 @@ export type AppointmentType = "firstVisit" | "followUp" |
                               "checkUp" | "exam" |
                               "surgery";
 
-export type Specialty = "neurology" | "cardiology" | "general";
+export type AppointmentSpecialty = "neurology" | "cardiology" | "general";
 
 export type AppointmentStatus = "pending" | "completed" | "cancelled" | "absent";
 
 export type Appointment = Omit<RawAppointment, "patientId"> & {
-  patientId : Patient;
+  patient : Patient;
 };
 
 export type RawAppointment = {
   id : number;
-  specialty : Specialty;
+  specialty : AppointmentSpecialty;
   type : AppointmentType;
   description : string;
   notes : string;
@@ -23,3 +23,32 @@ export type RawAppointment = {
   endTime : string | null;
   status : AppointmentStatus;
 };
+
+export class AppointmentsService {
+  public static displayableAppointmentType : {
+    [Key in AppointmentType] : string;
+  } = {
+    firstVisit: "First Visit",
+    followUp: "Follow Up",
+    checkUp: "Check Up",
+    exam: "Exam",
+    surgery: "Surgery"
+  };
+
+  public static displayableAppointmentSpecialty : {
+    [Key in AppointmentSpecialty] : string;
+  } = {
+    cardiology: "Cardiology",
+    general: "General",
+    neurology: "Neurology"
+  };
+
+  public static displayableAppointmentStatus : {
+    [Key in AppointmentStatus] : string;
+  } = {
+    absent: "Absent",
+    cancelled: "Cancelled",
+    completed: "Completed",
+    pending: "Pending"
+  };
+}
