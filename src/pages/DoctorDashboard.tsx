@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { AppointmentsCalendar } from "../components/AppointmentsCalendar";
 import { AppointmentsHistory } from "../components/AppointmentsHistory";
 import { PageLayout } from "../components/PageLayout";
 import Dayjs from "../helpers/dayjs";
-import { Appointment } from "../services/AppointmentsService";
+import { Appointment, AppointmentsService } from "../services/AppointmentsService";
+import { Patient, PatientsService } from "../services/PatientsService";
+import { useAsync, useIsMounted } from "@henriqueinonhe/react-hooks";
 
 //TEMP
 const mockedPatients = [
@@ -831,16 +833,36 @@ const mockedAppointments = [
   .sort((e1, e2) => Dayjs(e1.startTime).isBefore(Dayjs(e2.startTime)) ? -1 : 1) as Array<Appointment>;
 
 export function DoctorDashboard() : JSX.Element {
+  const [patients, setPatients] = useState<Array<Patient>>([]);
+  const [appointments, setAppointments] = useState<Array<Appointment>>([]);
+  const [dataIsLoading, setDataIsLoading] = useState(true);
+  const isMounted = useIsMounted();
+  
+  useAsync(isMounted, async () => {
+    return await Promise.all([
+      PatientsService.fetchPatients(),
+      AppointmentsService.fetchAppointments()
+    ]);
+  }, ([fetchedPatients, fetchedAppointments]) => {
+    setPatients(fetchedPatients);
+    setAppointments(fetchedAppointments);
+  }, [], setDataIsLoading);
+
+  console.log({
+    patients,
+    appointments
+  });
+
   return (
     <PageLayout>
-      {/* <AppointmentsCalendar 
+      <AppointmentsCalendar 
         minWeekday="monday"
         maxWeekday="friday"
         minTime="09:00"
         maxTime="18:00"
         currentDate={Dayjs()}
         appointments={mockedAppointments}
-      /> */}
+      />
 
       <AppointmentsHistory 
         appointments={mockedAppointments}
