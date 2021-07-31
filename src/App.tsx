@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
+import DoctorDashboard from "./pages/DoctorDashboard";
+import PatientDetails from "./pages/PatientDetails";
 
 const GlobalStyles = createGlobalStyle`
   /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -60,10 +62,24 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
+
 export function App() : JSX.Element {
   return (
     <>
       <GlobalStyles />
+      <BrowserRouter>
+        <Switch>
+          <Route path={["/"]}>
+            {/* TODO Lazy Load */}
+            <DoctorDashboard /> 
+          </Route>
+
+          <Route path="/patientDetails/:id">
+            {/* TODO Lazy Load */}
+            <PatientDetails />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </>
   );
 }
