@@ -7,15 +7,9 @@ import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays,
 import { AppointmentCard } from "./AppointmentCard";
 import { Appointment } from "../services/AppointmentsService";
 import Dayjs from "dayjs";
+import { DoctorDashboardComponentContainer } from "./DoctorDashboardComponentContainer";
 
-const Container = styled.div`
-  min-width: 700px;
-  max-width: 1000px;
-  width: 70vw;
-  margin: auto;
-  padding: 12px;
-  background-color: white;
-  border-radius: 3px;
+const Container = styled(DoctorDashboardComponentContainer)`
 `;
 
 const CalendarLabel = styled.span`
