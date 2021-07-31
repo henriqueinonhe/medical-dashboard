@@ -1,5 +1,6 @@
 import React from "react";
 import { AppointmentsCalendar } from "../components/AppointmentsCalendar";
+import { AppointmentsHistory } from "../components/AppointmentsHistory";
 import { PageLayout } from "../components/PageLayout";
 import Dayjs from "../helpers/dayjs";
 import { Appointment } from "../services/AppointmentsService";
@@ -826,17 +827,22 @@ const mockedAppointments = [
     ...appointment,
     patient: mockedPatients.find(patient => patient.id === appointment.patientId)
   }))
-  .filter(e => 0 < Dayjs(e.startTime).day() && Dayjs(e.startTime).day() < 6) as Array<Appointment>;
+  .filter(e => 0 < Dayjs(e.startTime).day() && Dayjs(e.startTime).day() < 6)
+  .sort((e1, e2) => Dayjs(e1.startTime).isBefore(Dayjs(e2.startTime)) ? -1 : 1) as Array<Appointment>;
 
 export function DoctorDashboard() : JSX.Element {
   return (
     <PageLayout>
-      <AppointmentsCalendar 
+      {/* <AppointmentsCalendar 
         minWeekday="monday"
         maxWeekday="friday"
         minTime="09:00"
         maxTime="18:00"
         currentDate={Dayjs()}
+        appointments={mockedAppointments}
+      /> */}
+
+      <AppointmentsHistory 
         appointments={mockedAppointments}
       />
     </PageLayout>
