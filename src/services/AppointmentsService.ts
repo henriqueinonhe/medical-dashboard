@@ -1,5 +1,5 @@
 import { apiClient } from "../helpers/apiHelper";
-import { Patient } from "./PatientsService";
+import { Patient, PatientsService } from "./PatientsService";
 
 export type AppointmentType = "firstVisit" | "followUp" |
                               "checkUp" | "exam" |
@@ -60,5 +60,25 @@ export class AppointmentsService {
     });
 
     return response.data;
+  }
+
+  public static async fetchAppointments() : Promise<Array<Appointment>> {
+    const [
+      rawAppointments,
+      patients
+    ] = await Promise.all([
+      this.fetchRawAppointments(),
+      PatientsService.fetchPatients()
+    ]);
+
+    //NOTE If patients are guaranteed to always come sorted by id
+    // this join can be made more efficient by using a binary search
+    const appointments = rawAppointments.map(appointment => ({
+      ...appointment,
+      //TODO Treat case where for some reason the corresponding patient can't be found
+      patient: patients.find(patient => patient.id === appointment.patientId)!
+    })); 
+
+    return appointments;
   }
 }
