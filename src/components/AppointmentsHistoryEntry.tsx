@@ -6,12 +6,32 @@ import { Appointment, AppointmentsService, AppointmentStatus } from "../services
 const Container = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 8px 0;
   margin: 0 4px;
   border-bottom: 1px solid #a8a8a8;
 
   &:last-of-type {
     border-bottom: none;
+  }
+`;
+
+const Column = styled.div`
+  display: flex;
+  align-items: center;
+  width: 50%;
+  max-width: 350px;
+`;
+
+const LeftColumn = styled(Column)`
+  justify-content: space-between;
+`;
+
+const RightColumn = styled(Column)`
+  justify-content: flex-end;
+
+  @media (min-width: 768px) {
+    justify-content: space-between;
   }
 `;
 
@@ -38,12 +58,17 @@ interface StatusChipProps {
 }
 
 const StatusChip = styled.div<StatusChipProps>`
+  display: none;
   background-color: ${props => statusChipColorMatrix[props.status]};
   color: white;
   border-radius: 100px;
   padding: 6px;
   font-size: 14px;
   margin-left: 20px;
+
+  @media (min-width: 768px) {
+    display: initial;
+  }
 `;
 
 const PatientNameField = styled.span`
@@ -51,7 +76,12 @@ const PatientNameField = styled.span`
 `;
 
 const TypeField = styled.span`
+  display: none;
   margin-left: 20px;
+
+  @media (min-width: 768px) {
+    display: initial;
+  }
 `;
 
 export interface AppointmentsHistoryEntryProps {
@@ -82,19 +112,24 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
 
   return (
     <Container>
-      <DateTimeContainer>
-        <DateField>{displayableDate}</DateField>
-        &nbsp;
-        <TimeField>{displayableStartTime} - {displayableEndTime}</TimeField>
-      </DateTimeContainer>
+      <LeftColumn>
+        <DateTimeContainer>
+          <DateField>{displayableDate}</DateField>
+          &nbsp;
+          <TimeField>{displayableStartTime} - {displayableEndTime}</TimeField>
+        </DateTimeContainer>
 
-      <StatusChip status={status}>
-        {displayableStatus}
-      </StatusChip>
+        <StatusChip status={status}>
+          {displayableStatus}
+        </StatusChip>
+      </LeftColumn>
 
-      <PatientNameField>{patient.name}</PatientNameField>
+      <RightColumn>
+        <PatientNameField>{patient.name}</PatientNameField>
 
-      <TypeField>{displayableType}</TypeField>
+        <TypeField>{displayableType}</TypeField>
+      </RightColumn>
+
     </Container>
   );
 });

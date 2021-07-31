@@ -5,7 +5,7 @@ import { AppointmentsHistoryEntry } from "./AppointmentsHistoryEntry";
 import { DoctorDashboardComponentContainer } from "./DoctorDashboardComponentContainer";
 
 const Container = styled(DoctorDashboardComponentContainer)`
-  min-width: 0;
+  min-width: 320px;
 `;
 
 const HistoryLabel = styled.span`
