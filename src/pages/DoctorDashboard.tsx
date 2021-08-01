@@ -29,22 +29,29 @@ export function DoctorDashboard() : JSX.Element {
 
   return (
     <PageLayout>
-      <AppointmentsCalendar 
-        minWeekday="monday"
-        maxWeekday="friday"
-        minTime="09:00"
-        maxTime="18:00"
-        currentDate={Dayjs()}
-        appointments={appointments}
-      />
+      {
+        dataIsLoading ?
+          <>Loading...</> :
+          <>
+            <AppointmentsCalendar 
+              minWeekday="monday"
+              maxWeekday="friday"
+              minTime="09:00"
+              maxTime="18:00"
+              currentDate={Dayjs()}
+              appointments={appointments}
+            />
 
-      <AppointmentsHistory 
-        appointments={appointments}
-      />
+            <AppointmentsHistory 
+              appointments={appointments}
+            />
 
-      <PatientsList 
-        patients={patients}
-      />
+            <PatientsList 
+              patients={patients}
+            />
+          </>
+      }
+      
     </PageLayout>
   );
 }
