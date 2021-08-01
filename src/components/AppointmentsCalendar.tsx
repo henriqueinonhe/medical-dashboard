@@ -6,7 +6,8 @@ import { capitalize } from "lodash";
 import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays, computeAvailableTimes, formatAllowedTime, dateToAllowedTime, dateToWeekday } from "../helpers/calendarHelper";
 import { AppointmentCard } from "./AppointmentCard";
 import { Appointment } from "../services/AppointmentsService";
-import Dayjs from "dayjs";
+import Dayjs from "../helpers/dayjs";
+import { Dayjs as DayjsType } from "dayjs";
 import { DoctorDashboardComponentContainer } from "./DoctorDashboardComponentContainer";
 
 const Container = styled(DoctorDashboardComponentContainer)`
@@ -108,7 +109,7 @@ function validateAppointmentCalendarProps(props : AppointmentsCalendarProps) : v
   }
 }
 
-function renderAppointmentsCards(currentDate : Dayjs.Dayjs, appointments : Array<Appointment>) : React.ReactNode {
+function renderAppointmentsCards(currentDate : DayjsType, appointments : Array<Appointment>) : React.ReactNode {
   const currentDateFirstWeekDay = currentDate.day(0);
   const currentDateLastWeekDay = currentDate.day(6);
   const currentDateWeekAppointments = appointments.filter(appointment => 
@@ -151,7 +152,7 @@ export interface AppointmentsCalendarProps {
   maxTime : AllowedTime;
   minWeekday : Weekday;
   maxWeekday : Weekday;
-  currentDate : Dayjs.Dayjs;
+  currentDate : DayjsType;
   appointments : Array<Appointment>;
 }
 
