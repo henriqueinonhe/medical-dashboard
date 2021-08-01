@@ -73,12 +73,17 @@ export function App() : JSX.Element {
       <GlobalStyles />
       <BrowserRouter>
         <Switch>
-          <Route exact path={"/"}>
+          <Route exact path="/">
             {/* TODO Lazy Load */}
             <DoctorDashboard /> 
           </Route>
 
-          <Route path="/patientDetails/:id">
+          <Route 
+            path={[
+              "/patientDetails/:patientId/appointments/:appointmentId",
+              "/patientDetails/:patientId"
+            ]}
+          >
             {/* TODO Lazy Load */}
             <PatientDetails />
           </Route>

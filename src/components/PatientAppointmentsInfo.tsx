@@ -61,15 +61,16 @@ function computePreviousAppointments(appointments : Array<RawAppointment>) : Arr
 
 export interface PatientAppointmentsInfoProps {
   appointments : Array<RawAppointment>;
+  activeAppointment ?: RawAppointment;
 }
 
 export const PatientAppointmentsInfo = React.memo((props : PatientAppointmentsInfoProps) => {
   const {
-    appointments
+    appointments,
+    activeAppointment
   } = props;
 
   const [activeTab, setActiveTab] = useState<Tab>("Recent");
-  const [activeAppointment, setActiveAppointment] = useState<RawAppointment>();
 
   const categorizedAppointments : {
     [Key in Tab] : Array<RawAppointment>;
@@ -111,7 +112,6 @@ export const PatientAppointmentsInfo = React.memo((props : PatientAppointmentsIn
                 key={appointment.id}
                 appointment={appointment}
                 isActive={activeAppointment?.id === appointment.id}
-                onClick={() => setActiveAppointment(appointment)}
               />)
           }
         </AppointmentsList>

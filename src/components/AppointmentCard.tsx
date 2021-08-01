@@ -21,6 +21,7 @@ const Container = styled.div<ContainerProps>`
   background-color: #4a7dff;
   border-radius: 3px;
   padding: 10px;
+  cursor: pointer;
 
   //TEMP
   overflow-y: hidden;

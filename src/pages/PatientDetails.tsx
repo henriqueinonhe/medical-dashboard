@@ -9,8 +9,10 @@ import { Patient, PatientsService } from "../services/PatientsService";
 import { PatientAppointmentsInfo } from "../components/PatientAppointmentsInfo";
 
 export function PatientDetails() : JSX.Element {
-  const { id } = useParams<{ id : string }>();
-  const patientId = parseInt(id);
+  const { patientId : patientIdSlug, appointmentId : appointmenIdSlug } = 
+    useParams<{ patientId : string, appointmentId : string }>();
+  const patientId = parseInt(patientIdSlug);
+  const appointmentId = appointmenIdSlug ? parseInt(appointmenIdSlug) : null;
   const [patient, setPatient] = useState<Patient>();
   const [appointments, setAppointments] = useState<Array<RawAppointment>>([]);
   const [dataIsLoading, setDataIsLoading] = useState(true);
@@ -30,6 +32,7 @@ export function PatientDetails() : JSX.Element {
   const appointmentsSortedByLatest = appointments.sort((e1, e2) => 
     Dayjs(e1.startTime).isBefore(Dayjs(e2.startTime)) ? -1 : 1);
   const lastAppointment = appointmentsSortedByLatest[0];
+  const activeAppointment = appointments.find(appointment => appointment.id === appointmentId);
 
   return (
     <PageLayout>
@@ -44,6 +47,7 @@ export function PatientDetails() : JSX.Element {
 
             <PatientAppointmentsInfo 
               appointments={appointments}
+              activeAppointment={activeAppointment}
             />
           </>
       }
