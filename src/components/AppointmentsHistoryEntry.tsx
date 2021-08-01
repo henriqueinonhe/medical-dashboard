@@ -3,14 +3,17 @@ import React from "react";
 import styled from "styled-components";
 import { Appointment, AppointmentsService } from "../services/AppointmentsService";
 import { AppointmentStatusChip } from "./AppointmentStatusChip";
+import { Link } from "react-router-dom";
 
-const Container = styled.div`
+const Container = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px 0;
   margin: 0 4px;
   border-bottom: 1px solid #a8a8a8;
+  text-decoration: none;
+  cursor: pointer;
 
   &:last-of-type {
     border-bottom: none;
@@ -77,6 +80,7 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
   } = props;
 
   const {
+    id,
     startTime,
     endTime,
     status,
@@ -92,7 +96,7 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
   const displayableType = AppointmentsService.displayableAppointmentType[type];
 
   return (
-    <Container>
+    <Container to={`/patientDetails/${patient.id}/appointments/${id}`}>
       <LeftColumn>
         <DateTimeContainer>
           <DateField>{displayableDate}</DateField>
