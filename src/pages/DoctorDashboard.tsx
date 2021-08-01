@@ -6,6 +6,7 @@ import Dayjs from "../helpers/dayjs";
 import { Appointment, AppointmentsService } from "../services/AppointmentsService";
 import { Patient, PatientsService } from "../services/PatientsService";
 import { useAsync, useIsMounted } from "@henriqueinonhe/react-hooks";
+import { PatientsList } from "../components/PatientsList";
 
 //TEMP
 const mockedPatients = [
@@ -848,11 +849,6 @@ export function DoctorDashboard() : JSX.Element {
     setAppointments(fetchedAppointments);
   }, [], setDataIsLoading);
 
-  console.log({
-    patients,
-    appointments
-  });
-
   return (
     <PageLayout>
       <AppointmentsCalendar 
@@ -866,6 +862,10 @@ export function DoctorDashboard() : JSX.Element {
 
       <AppointmentsHistory 
         appointments={mockedAppointments}
+      />
+
+      <PatientsList 
+        patients={patients}
       />
     </PageLayout>
   );

@@ -6,6 +6,7 @@ import { PageLayout } from "../components/PageLayout";
 import { PatientInfo } from "../components/PatientInfo";
 import { AppointmentsService, RawAppointment } from "../services/AppointmentsService";
 import { Patient, PatientsService } from "../services/PatientsService";
+import { PatientAppointmentsInfo } from "../components/PatientAppointmentsInfo";
 
 export function PatientDetails() : JSX.Element {
   const { id } = useParams<{ id : string }>();
@@ -35,10 +36,16 @@ export function PatientDetails() : JSX.Element {
       {
         dataIsLoading ?
           <>Loading ... </> :
-          <PatientInfo 
-            patient={patient!}
-            lastAppointment={lastAppointment}
-          />
+          <>
+            <PatientInfo 
+              patient={patient!}
+              lastAppointment={lastAppointment}
+            />
+
+            <PatientAppointmentsInfo 
+              appointments={appointments}
+            />
+          </>
       }
     </PageLayout>
   );
