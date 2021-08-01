@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { AppointmentsService, RawAppointment } from "../services/AppointmentsService";
 import { AppointmentStatusChip } from "./AppointmentStatusChip";
 import Dayjs from "../helpers/dayjs";
+import { Link, useParams } from "react-router-dom";
 
 interface ContainerProps {
   isActive : boolean;
 }
 
-const Container = styled.div<ContainerProps>`
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Container = styled(({isActive, ...props}) => <Link {...props}/>)<ContainerProps>`
   display: flex;
   padding: 10px;
   align-items: center;
@@ -16,6 +18,7 @@ const Container = styled.div<ContainerProps>`
   background-color: ${props => props.isActive ? "#d7e9fc" : "transparent"};
   cursor: pointer;
   border-radius: 5px;
+  text-decoration: none;
 `;
 
 const DateTimeContainer = styled.div`
@@ -42,15 +45,16 @@ const StatusChip = styled(AppointmentStatusChip)`
 export interface PatientAppointmentsListEntryProps {
   appointment : RawAppointment;
   isActive : boolean;
-  onClick : () => void;
 }
 
 export const PatientAppointmentsListEntry = React.memo((props : PatientAppointmentsListEntryProps) => {
   const {
     appointment,
-    isActive,
-    onClick
+    isActive
   } = props;
+
+  const { patientId : patientIdSlug } = useParams<{ patientId : string }>();
+  const patientId = parseInt(patientIdSlug);
 
   const {
     startTime,
@@ -67,7 +71,7 @@ export const PatientAppointmentsListEntry = React.memo((props : PatientAppointme
   const displayableType = AppointmentsService.displayableAppointmentType[type];
 
   return (
-    <Container isActive={isActive} onClick={onClick}>
+    <Container isActive={isActive} to={`/patientDetails/${patientId}/appointments/${appointment.id}`}>
       <DateTimeContainer>
         <DateField>{displayableDate}</DateField>
         &nbsp;

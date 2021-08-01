@@ -5,6 +5,7 @@ import { DoctorDashboardComponentContainer } from "./DoctorDashboardComponentCon
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { computeCurrentAge } from "../helpers/ageHelper";
+import { Link } from "react-router-dom";
 
 const Container = styled(DoctorDashboardComponentContainer)``;
 
@@ -62,11 +63,13 @@ const PatientEntriesContainer = styled.div`
   margin-top: 12px;
 `;
 
-const PatientEntry = styled.div`
+const PatientEntry = styled(Link)`
   display: flex;
   align-items: center;
   padding: 8px 0;
   border-bottom: 1px solid #a8a8a8;
+  text-decoration: none;
+  cursor: pointer;
 
   &:last-of-type {
     border-bottom: none;
@@ -137,6 +140,7 @@ export const PatientsList = React.memo((props : PatientsListProps) => {
           displayedPatients.map(patient =>
             <PatientEntry
               key={patient.id}
+              to={`/patientDetails/${patient.id}`}
             >
               <PatientNameField>{patient.name}</PatientNameField>
               <PatientAgeField>{`${computeCurrentAge(patient.birthday)} y/o`}</PatientAgeField>

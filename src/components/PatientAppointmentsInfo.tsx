@@ -46,34 +46,73 @@ const AppointmentsList = styled.div`
 
 type Tab = "Recent" | "Upcoming" | "History";
 
+function isUpcomingAppointment(appointment : RawAppointment) : boolean {
+  const now = Dayjs();
+  const appointmentDate = Dayjs(appointment.startTime);
+  return now.isBefore(appointmentDate);
+}
+
+function isPreviousAppointment(appointment : RawAppointment) : boolean {
+  const now = Dayjs();
+  const appointmentDate = Dayjs(appointment.startTime);
+  return now.isAfter(appointmentDate);
+}
+
+function isRecentAppointment(appointment : RawAppointment) : boolean {
+  const now = Dayjs();
+  const appointmentDate = Dayjs(appointment.startTime);
+  const appointmentWasAtMostOneWeekAgo = 
+    now.diff(appointmentDate, "days", true) <= 7 &&
+    isPreviousAppointment(appointment);
+
+  return appointmentWasAtMostOneWeekAgo;
+}
+
 function computeRecentAppointments(appointments : Array<RawAppointment>) : Array<RawAppointment> {
-  return appointments.filter(appointment => 
-    Dayjs().diff(Dayjs(appointment.startTime), "days") <= 7);
+  return appointments.filter(appointment => isRecentAppointment(appointment));
 }
 
 function computeUpcomingAppointments(appointments : Array<RawAppointment>) : Array<RawAppointment> {
-  return appointments.filter(appointment => Dayjs().isBefore(Dayjs(appointment.startTime)));
+  return appointments.filter(appointment => isUpcomingAppointment(appointment));
 }
 
 function computePreviousAppointments(appointments : Array<RawAppointment>) : Array<RawAppointment> {
-  return appointments.filter(appointment => Dayjs().isAfter(Dayjs(appointment.startTime)));
+  return appointments.filter(appointment => isPreviousAppointment(appointment));
 }
 
+function computeInitialActiveTab(activeAppointment ?: RawAppointment) : Tab {
+  if(!activeAppointment) {
+    return "Recent";
+  }
+
+  if(isRecentAppointment(activeAppointment)) {
+    return "Recent";
+  }
+  else if(isUpcomingAppointment(activeAppointment)) {
+    return "Upcoming";
+  }
+  else {
+    return "History";
+  }
+}
+
+type CategorizedAppointments = {
+  [Key in Tab] : Array<RawAppointment>;
+}
 export interface PatientAppointmentsInfoProps {
   appointments : Array<RawAppointment>;
+  activeAppointment ?: RawAppointment;
 }
 
 export const PatientAppointmentsInfo = React.memo((props : PatientAppointmentsInfoProps) => {
   const {
-    appointments
+    appointments,
+    activeAppointment
   } = props;
-
-  const [activeTab, setActiveTab] = useState<Tab>("Recent");
-  const [activeAppointment, setActiveAppointment] = useState<RawAppointment>();
-
-  const categorizedAppointments : {
-    [Key in Tab] : Array<RawAppointment>;
-  } = {
+  
+  const [activeTab, setActiveTab] = useState<Tab>(computeInitialActiveTab(activeAppointment));
+  
+  const categorizedAppointments : CategorizedAppointments = {
     Recent: computeRecentAppointments(appointments),
     Upcoming: computeUpcomingAppointments(appointments),
     History: computePreviousAppointments(appointments)
@@ -111,7 +150,6 @@ export const PatientAppointmentsInfo = React.memo((props : PatientAppointmentsIn
                 key={appointment.id}
                 appointment={appointment}
                 isActive={activeAppointment?.id === appointment.id}
-                onClick={() => setActiveAppointment(appointment)}
               />)
           }
         </AppointmentsList>

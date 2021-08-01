@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { AllowedTime, formatAllowedTime, Weekday } from "../helpers/calendarHelper";
 import { AppointmentsService, AppointmentStatus, AppointmentType } from "../services/AppointmentsService";
@@ -9,7 +10,15 @@ interface ContainerProps {
   endTime : AllowedTime;
 }
 
-const Container = styled.div<ContainerProps>`
+const Container = styled(({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  weekday,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  startTime,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  endTime,
+  ...props
+}) => <Link {...props}/>)<ContainerProps>`
   grid-column-start: ${props => props.weekday};
   grid-row-start: ${props => formatAllowedTime(props.startTime)};
   grid-row-end: ${props => formatAllowedTime(props.endTime)};
@@ -21,9 +30,11 @@ const Container = styled.div<ContainerProps>`
   background-color: #4a7dff;
   border-radius: 3px;
   padding: 10px;
+  cursor: pointer;
+  text-decoration: none;
 
   //TEMP
-  overflow-y: hidden;
+  overflow: hidden;
 `;
 
 const PatientNameField = styled.span`
@@ -55,9 +66,11 @@ const DescriptionField = styled.span`
 `;
 
 export interface AppointmentCardProps {
+  appointmentId : number;
   weekday : Weekday;
   startTime : AllowedTime;
   endTime : AllowedTime;
+  patientId : number;
   patientName : string;
   description : string;
   type : AppointmentType;
@@ -66,9 +79,11 @@ export interface AppointmentCardProps {
 
 export const AppointmentCard = React.memo((props : AppointmentCardProps) => {
   const {
+    appointmentId,
     weekday,
     startTime,
     endTime,
+    patientId,
     patientName,
     description,
     type,
@@ -83,6 +98,7 @@ export const AppointmentCard = React.memo((props : AppointmentCardProps) => {
       weekday={weekday}
       startTime={startTime}
       endTime={endTime}
+      to={`/patientDetails/${patientId}/appointments/${appointmentId}`}
     >
       <PatientNameField>{patientName}</PatientNameField>
       <TypeAndStatusRow>
