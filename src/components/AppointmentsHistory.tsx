@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Appointment } from "../services/AppointmentsService";
 import { AppointmentsHistoryEntry } from "./AppointmentsHistoryEntry";
 import { DoctorDashboardComponentContainer } from "./DoctorDashboardComponentContainer";
+import Dayjs from "../helpers/dayjs";
 
 const Container = styled(DoctorDashboardComponentContainer)`
   min-width: 320px;
@@ -30,13 +31,16 @@ export const AppointmentsHistory = React.memo((props : AppointmentsHistory) => {
     appointments
   } = props;
 
+  const appointmentsSortedByNewest = appointments.sort((first, second) => 
+    Dayjs(first.startTime).isBefore(Dayjs(second.startTime)) ? 1 : -1);
+
   return (
     <Container>
       <HistoryLabel>History</HistoryLabel>
 
       <AppointmentsHistoryEntryList>
         {
-          appointments.map(appointment =>
+          appointmentsSortedByNewest.map(appointment =>
             <AppointmentsHistoryEntry 
               key={appointment.id}
               appointment={appointment}

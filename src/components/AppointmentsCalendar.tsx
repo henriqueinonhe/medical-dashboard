@@ -135,9 +135,11 @@ function renderAppointmentsCards(currentDate : DayjsType, appointments : Array<A
     return (
       <AppointmentCard 
         key={id}
+        appointmentId={id}
         weekday={weekday}
         startTime={formattedStartTime}
         endTime={formattedEndTime}
+        patientId={patient.id}
         patientName={patient.name}
         description={description}
         type={type}

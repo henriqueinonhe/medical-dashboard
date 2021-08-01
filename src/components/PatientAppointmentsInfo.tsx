@@ -47,8 +47,9 @@ const AppointmentsList = styled.div`
 type Tab = "Recent" | "Upcoming" | "History";
 
 function computeRecentAppointments(appointments : Array<RawAppointment>) : Array<RawAppointment> {
-  return appointments.filter(appointment => 
-    Dayjs().diff(Dayjs(appointment.startTime), "days") <= 7);
+  return appointments.filter(appointment =>
+    Dayjs().diff(Dayjs(appointment.startTime), "days", true) <= 7 && 
+    Dayjs().diff(Dayjs(appointment.startTime), "days", true) > 0);
 }
 
 function computeUpcomingAppointments(appointments : Array<RawAppointment>) : Array<RawAppointment> {
