@@ -1,7 +1,8 @@
 import Dayjs from "../helpers/dayjs";
 import React from "react";
 import styled from "styled-components";
-import { Appointment, AppointmentsService, AppointmentStatus } from "../services/AppointmentsService";
+import { Appointment, AppointmentsService } from "../services/AppointmentsService";
+import { AppointmentStatusChip } from "./AppointmentStatusChip";
 
 const Container = styled.div`
   display: flex;
@@ -44,26 +45,8 @@ const DateField = styled.span``;
 
 const TimeField = styled.span``;
 
-const statusChipColorMatrix : {
-  [Key in AppointmentStatus] : string;
-} = {
-  absent: "#f53b3b",
-  cancelled: "#808080",
-  completed: "#30e339",
-  pending: "#d9b732"
-};
-
-interface StatusChipProps {
-  status : AppointmentStatus;
-}
-
-const StatusChip = styled.div<StatusChipProps>`
+const StatusChip = styled(AppointmentStatusChip)`
   display: none;
-  background-color: ${props => statusChipColorMatrix[props.status]};
-  color: white;
-  border-radius: 100px;
-  padding: 6px;
-  font-size: 14px;
   margin-left: 20px;
 
   @media (min-width: 768px) {
@@ -102,12 +85,10 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
   } = appointment;
 
   const actualStartTime = Dayjs(startTime);
-  //FIXME This should be done by the service
   const actualEndTime = endTime ? Dayjs(endTime) : Dayjs(startTime).add(30, "minutes");
   const displayableDate = actualStartTime.format("MM/DD/YYYY");
   const displayableStartTime = actualStartTime.format("HH:mm");
   const displayableEndTime = actualEndTime.format("HH:mm");
-  const displayableStatus = AppointmentsService.displayableAppointmentStatus[status];
   const displayableType = AppointmentsService.displayableAppointmentType[type];
 
   return (
@@ -119,9 +100,7 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
           <TimeField>{displayableStartTime} - {displayableEndTime}</TimeField>
         </DateTimeContainer>
 
-        <StatusChip status={status}>
-          {displayableStatus}
-        </StatusChip>
+        <StatusChip status={status} />
       </LeftColumn>
 
       <RightColumn>
