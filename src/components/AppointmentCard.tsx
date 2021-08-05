@@ -1,8 +1,9 @@
+import Dayjs from "../helpers/dayjs";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { AllowedTime, allowedTimeToCssGridLabel, Weekday } from "../helpers/calendarHelper";
-import { AppointmentsService, AppointmentStatus, AppointmentType } from "../services/AppointmentsService";
+import { AllowedTime, allowedTimeToCssGridLabel, dateToAllowedTime, dateToWeekday, Weekday } from "../helpers/calendarHelper";
+import { Appointment, AppointmentsService } from "../services/AppointmentsService";
 import { AppointmentStatusChip } from "./AppointmentStatusChip";
 
 interface ContainerProps {
@@ -110,37 +111,41 @@ const StatusChip = styled(AppointmentStatusChip)`
 `;
 
 export interface AppointmentCardProps {
-  appointmentId : number;
-  weekday : Weekday;
-  startTime : AllowedTime;
-  endTime : AllowedTime;
-  patientId : number;
-  patientName : string;
-  description : string;
-  type : AppointmentType;
-  status : AppointmentStatus;
+  appointment : Appointment<"patient">;
 }
 
 export const AppointmentCard = React.memo((props : AppointmentCardProps) => {
   const {
-    appointmentId,
-    weekday,
-    startTime,
-    endTime,
-    patientId,
-    patientName,
-    description,
-    type,
-    status
+    appointment
   } = props;
 
+  const {
+    id: appointmentId,
+    startTime,
+    endTime,
+    description,
+    type,
+    status,
+    patient
+  } = appointment;
+
+  const {
+    id: patientId,
+    name: patientName
+  } = patient;
+
   const displayableType = AppointmentsService.displayableAppointmentType[type];
+  const weekday = dateToWeekday(startTime);
+  const formattedStartTime = dateToAllowedTime(startTime);
+  const formattedEndTime = endTime ? 
+    dateToAllowedTime(endTime) : 
+    dateToAllowedTime(Dayjs(startTime).add(30, "minutes").toISOString());
 
   return (
     <Container
       weekday={weekday}
-      startTime={startTime}
-      endTime={endTime}
+      startTime={formattedStartTime}
+      endTime={formattedEndTime}
       to={`/patientDetails/${patientId}/appointments/${appointmentId}`}
     >
       <Content>

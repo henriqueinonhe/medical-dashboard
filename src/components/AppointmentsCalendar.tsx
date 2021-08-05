@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Joi from "joi";
 import { LogicError } from "../exceptions/LogicError";
 import { capitalize } from "lodash";
-import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays, computeAvailableTimes, allowedTimeToCssGridLabel, dateToAllowedTime, dateToWeekday } from "../helpers/calendarHelper";
+import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays, computeAvailableTimes, allowedTimeToCssGridLabel } from "../helpers/calendarHelper";
 import { AppointmentCard } from "./AppointmentCard";
 import { Appointment } from "../services/AppointmentsService";
 import Dayjs from "../helpers/dayjs";
@@ -117,34 +117,11 @@ function renderAppointmentsCards(currentDate : DayjsType, appointments : Array<A
     Dayjs(appointment.startTime).isBetween(currentDateFirstWeekDay, currentDateLastWeekDay));
 
   return currentDateWeekAppointments.map(appointment => {
-    const {
-      id,
-      startTime,
-      endTime,
-      patient,
-      description,
-      type,
-      status
-    } = appointment;
-
-    const weekday = dateToWeekday(startTime);
-    const formattedStartTime = dateToAllowedTime(startTime);
-    const formattedEndTime = endTime ? 
-      dateToAllowedTime(endTime) : 
-      dateToAllowedTime(Dayjs(startTime).add(30, "minutes").toISOString());
 
     return (
       <AppointmentCard 
-        key={id}
-        appointmentId={id}
-        weekday={weekday}
-        startTime={formattedStartTime}
-        endTime={formattedEndTime}
-        patientId={patient!.id}
-        patientName={patient!.name}
-        description={description}
-        type={type}
-        status={status}
+        key={appointment.id}
+        appointment={appointment}
       />
     );
   });
