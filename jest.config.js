@@ -3,5 +3,6 @@ module.exports = {
   transform: {
     "^.+\\.tsx?$": "ts-jest"
   },
-  collectCoverageFrom: ["./src/**/*.ts"]
+  collectCoverageFrom: ["./src/**/*.ts"],
+  testEnvironment: "jsdom"
 };
