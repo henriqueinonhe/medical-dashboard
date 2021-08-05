@@ -10,6 +10,7 @@ import { PatientsList } from "../components/PatientsList";
 import { Route, Switch, useLocation } from "react-router";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { SpinnerWrapper } from "../components/SpinnerWrapper";
 
 const NavLinkList = styled.div`
   display: flex;
@@ -61,32 +62,31 @@ export function DoctorDashboardPage() : JSX.Element {
 
   return (
     <PageLayout>
-      <NavLinkList>
-        <NavLink
-          to="/dashboard/calendar"
-          active={location.pathname === "/dashboard/calendar"}
-        >
-          Calendar
-        </NavLink>
-
-        <NavLink
-          to="/dashboard/history"
-          active={location.pathname === "/dashboard/history"}
-        >
-          History
-        </NavLink>
-
-        <NavLink
-          to="/dashboard/patients"
-          active={location.pathname === "/dashboard/patients"}
-        >
-          Patients
-        </NavLink>
-      </NavLinkList>
-
       {
-        dataIsLoading ?
-          <>Loading...</> :
+        <SpinnerWrapper isLoading={dataIsLoading}>
+          <NavLinkList>
+            <NavLink
+              to="/dashboard/calendar"
+              active={location.pathname === "/dashboard/calendar"}
+            >
+              Calendar
+            </NavLink>
+
+            <NavLink
+              to="/dashboard/history"
+              active={location.pathname === "/dashboard/history"}
+            >
+              History
+            </NavLink>
+
+            <NavLink
+              to="/dashboard/patients"
+              active={location.pathname === "/dashboard/patients"}
+            >
+              Patients
+            </NavLink>
+          </NavLinkList>
+
           <Switch>
             <Route path="/dashboard/calendar">
               <AppointmentsCalendar 
@@ -111,6 +111,7 @@ export function DoctorDashboardPage() : JSX.Element {
               />
             </Route>
           </Switch>
+        </SpinnerWrapper>
       }
       
     </PageLayout>
