@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { AllowedTime, formatAllowedTime, Weekday } from "../helpers/calendarHelper";
 import { AppointmentsService, AppointmentStatus, AppointmentType } from "../services/AppointmentsService";
+import { AppointmentStatusChip } from "./AppointmentStatusChip";
 
 interface ContainerProps {
   weekday : Weekday;
@@ -43,6 +44,9 @@ const Container = styled(({
 
 const Content = styled.div`
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const PatientNameField = styled.span`
@@ -51,20 +55,10 @@ const PatientNameField = styled.span`
   text-align: center;
 `;
 
-const TypeAndStatusRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  color: white;
-  font-size: 14px;
-`;
-
 const TypeField = styled.span`
   color: white;
-`;
-
-const StatusField = styled.span`
-  color: white;
+  text-align: center;
+  margin-top: 8px;
 `;
 
 const TooltipContainer = styled.div`
@@ -109,6 +103,11 @@ const Tooltip = styled.div`
   }
 `;
 
+const StatusChip = styled(AppointmentStatusChip)`
+  display: inline-block;
+  margin-top : 8px;
+`;
+
 export interface AppointmentCardProps {
   appointmentId : number;
   weekday : Weekday;
@@ -135,7 +134,6 @@ export const AppointmentCard = React.memo((props : AppointmentCardProps) => {
   } = props;
 
   const displayableType = AppointmentsService.displayableAppointmentType[type];
-  const displayableStatus = AppointmentsService.displayableAppointmentStatus[status];
 
   return (
     <Container
@@ -146,10 +144,9 @@ export const AppointmentCard = React.memo((props : AppointmentCardProps) => {
     >
       <Content>
         <PatientNameField>{patientName}</PatientNameField>
-        <TypeAndStatusRow>
-          <TypeField>{displayableType}</TypeField> | 
-          <StatusField>{displayableStatus}</StatusField>
-        </TypeAndStatusRow>
+        <TypeField>{displayableType}</TypeField> 
+        {/* <StatusField>{displayableStatus}</StatusField> */}
+        <StatusChip status={status} />
       </Content>
 
       <TooltipContainer>

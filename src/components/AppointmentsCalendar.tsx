@@ -43,7 +43,7 @@ function generateGridTemplateRows(availableTimes : Array<AllowedTime>) : string 
   //One row for the weekdays labels and then one for each
   //available time
   return `
-    auto ${availableTimes.map(time => `[${formatAllowedTime(time)}] 80px`).join(" ")}
+    auto ${availableTimes.map(time => `[${formatAllowedTime(time)}] 100px`).join(" ")}
   `;
 }
 
