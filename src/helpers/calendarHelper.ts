@@ -76,7 +76,7 @@ export function computeAvailableTimes(minTime : AllowedTime, maxTime : AllowedTi
  * Formats time string so that it can be used as a
  * row name in a CSS grid
  */
-export function formatAllowedTime(time : AllowedTime) : string {
+export function allowedTimeToCssGridLabel(time : AllowedTime) : string {
   return `time${time.replace(":", "")}`;
 }
 

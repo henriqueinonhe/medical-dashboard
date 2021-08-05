@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { AllowedTime, formatAllowedTime, Weekday } from "../helpers/calendarHelper";
+import { AllowedTime, allowedTimeToCssGridLabel, Weekday } from "../helpers/calendarHelper";
 import { AppointmentsService, AppointmentStatus, AppointmentType } from "../services/AppointmentsService";
 import { AppointmentStatusChip } from "./AppointmentStatusChip";
 
@@ -21,8 +21,8 @@ const Container = styled(({
   ...props
 }) => <Link {...props}/>)<ContainerProps>`
   grid-column-start: ${props => props.weekday};
-  grid-row-start: ${props => formatAllowedTime(props.startTime)};
-  grid-row-end: ${props => formatAllowedTime(props.endTime)};
+  grid-row-start: ${props => allowedTimeToCssGridLabel(props.startTime)};
+  grid-row-end: ${props => allowedTimeToCssGridLabel(props.endTime)};
 
   display: flex;
   flex-direction: column;

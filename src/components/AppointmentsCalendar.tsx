@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Joi from "joi";
 import { LogicError } from "../exceptions/LogicError";
 import { capitalize } from "lodash";
-import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays, computeAvailableTimes, formatAllowedTime, dateToAllowedTime, dateToWeekday } from "../helpers/calendarHelper";
+import { Weekday, AllowedTime, weekdays, allowedTimes, computeAvailableWeekdays, computeAvailableTimes, allowedTimeToCssGridLabel, dateToAllowedTime, dateToWeekday } from "../helpers/calendarHelper";
 import { AppointmentCard } from "./AppointmentCard";
 import { Appointment } from "../services/AppointmentsService";
 import Dayjs from "../helpers/dayjs";
@@ -43,7 +43,7 @@ function generateGridTemplateRows(availableTimes : Array<AllowedTime>) : string 
   //One row for the weekdays labels and then one for each
   //available time
   return `
-    auto ${availableTimes.map(time => `[${formatAllowedTime(time)}] auto`).join(" ")}
+    auto ${availableTimes.map(time => `[${allowedTimeToCssGridLabel(time)}] auto`).join(" ")}
   `;
 }
 
@@ -63,7 +63,7 @@ interface TimeLabelProps {
 }
 
 const TimeLabel = styled.span<TimeLabelProps>`
-  grid-row-start: ${props => formatAllowedTime(props.startTime)};
+  grid-row-start: ${props => allowedTimeToCssGridLabel(props.startTime)};
   font-weight: bold;
 `;
 
@@ -78,7 +78,7 @@ const AppointmentCardUnderlay = styled.div<AppointmentCardUnderlayProps>`
   min-height: 100px;
 
   grid-column-start: ${props => props.weekday};
-  grid-row-start: ${props => formatAllowedTime(props.startTime)};
+  grid-row-start: ${props => allowedTimeToCssGridLabel(props.startTime)};
 `;
 
 function validateAppointmentCalendarProps(props : AppointmentsCalendarProps) : void {
