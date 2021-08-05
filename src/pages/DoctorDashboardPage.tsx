@@ -39,7 +39,7 @@ const NavLink = styled(({active, ...props}) => <Link {...props} />)<NavLinkProps
   color: ${props => props.active ? "white" : "initial"};
 `;
 
-export function DoctorDashboard() : JSX.Element {
+export function DoctorDashboardPage() : JSX.Element {
   const [patients, setPatients] = useState<Array<Patient>>([]);
   const [appointments, setAppointments] = useState<Array<Appointment>>([]);
   const [dataIsLoading, setDataIsLoading] = useState(true);
@@ -117,4 +117,4 @@ export function DoctorDashboard() : JSX.Element {
   );
 }
 
-export default DoctorDashboard;
+export default DoctorDashboardPage;

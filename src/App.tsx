@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import DoctorDashboard from "./pages/DoctorDashboard";
-import PatientDetails from "./pages/PatientDetails";
+import DoctorDashboardPage from "./pages/DoctorDashboardPage";
+import PatientDetailsPage from "./pages/PatientDetailsPage";
 
 const GlobalStyles = createGlobalStyle`
   /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -75,7 +75,7 @@ export function App() : JSX.Element {
         <Switch>
           <Route path="/dashboard">
             {/* TODO Lazy Load */}
-            <DoctorDashboard /> 
+            <DoctorDashboardPage /> 
           </Route>
 
           <Route 
@@ -85,7 +85,7 @@ export function App() : JSX.Element {
             ]}
           >
             {/* TODO Lazy Load */}
-            <PatientDetails />
+            <PatientDetailsPage />
           </Route>
           <Redirect to="/dashboard/calendar"/>
         </Switch>

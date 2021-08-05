@@ -8,7 +8,7 @@ import { AppointmentsService, RawAppointment } from "../services/AppointmentsSer
 import { Patient, PatientsService } from "../services/PatientsService";
 import { PatientAppointmentsInfo } from "../components/PatientAppointmentsInfo";
 
-export function PatientDetails() : JSX.Element {
+export function PatientDetailsPage() : JSX.Element {
   const { patientId : patientIdSlug, appointmentId : appointmenIdSlug } = 
     useParams<{ patientId : string, appointmentId : string }>();
   const patientId = parseInt(patientIdSlug);
@@ -55,4 +55,4 @@ export function PatientDetails() : JSX.Element {
   );
 }
 
-export default PatientDetails;
+export default PatientDetailsPage;
