@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { AppointmentsService, RawAppointment } from "../services/AppointmentsService";
+import { AppointmentsService, Appointment } from "../services/AppointmentsService";
 import Dayjs from "../helpers/dayjs";
 
 const Container = styled.div`
@@ -34,7 +34,7 @@ const DescriptionField = styled.span`
 `;
 
 export interface PatientAppointmentDetailsProps {
-  appointment : RawAppointment;
+  appointment : Appointment;
 }
 
 export const PatientAppointmentDetails = React.memo((props : PatientAppointmentDetailsProps) => {

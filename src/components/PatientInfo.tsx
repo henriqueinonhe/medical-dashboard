@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { computeCurrentAge } from "../helpers/ageHelper";
-import { AppointmentsService, RawAppointment } from "../services/AppointmentsService";
+import { AppointmentsService, Appointment } from "../services/AppointmentsService";
 import { Patient, PatientsService } from "../services/PatientsService";
 import Dayjs from "../helpers/dayjs";
 
@@ -78,7 +78,7 @@ const InfoCardFooter = styled.div`
 
 export interface PatientInfoProps {
   patient : Patient;
-  lastAppointment ?: RawAppointment;
+  lastAppointment ?: Appointment;
 }
 
 export const PatientInfo = React.memo((props : PatientInfoProps) => {

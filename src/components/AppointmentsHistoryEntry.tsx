@@ -76,7 +76,7 @@ const TypeField = styled.span`
 `;
 
 export interface AppointmentsHistoryEntryProps {
-  appointment : Appointment;
+  appointment : Appointment<"patient">;
 }
 
 export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryEntryProps) => {
@@ -101,7 +101,7 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
   const displayableType = AppointmentsService.displayableAppointmentType[type];
 
   return (
-    <Container to={`/patientDetails/${patient.id}/appointments/${id}`}>
+    <Container to={`/patientDetails/${patient!.id}/appointments/${id}`}>
       <LeftColumn>
         <DateTimeContainer>
           <DateField>{displayableDate}</DateField>
@@ -113,7 +113,7 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
       </LeftColumn>
 
       <RightColumn>
-        <PatientNameField>{patient.name}</PatientNameField>
+        <PatientNameField>{patient!.name}</PatientNameField>
 
         <TypeField>{displayableType}</TypeField>
       </RightColumn>

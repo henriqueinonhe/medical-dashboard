@@ -109,7 +109,7 @@ function validateAppointmentCalendarProps(props : AppointmentsCalendarProps) : v
   }
 }
 
-function renderAppointmentsCards(currentDate : DayjsType, appointments : Array<Appointment>) : React.ReactNode {
+function renderAppointmentsCards(currentDate : DayjsType, appointments : Array<Appointment<"patient">>) : React.ReactNode {
   const currentDateFirstWeekDay = currentDate.day(0);
   const currentDateLastWeekDay = currentDate.day(6);
   const currentDateWeekAppointments = appointments.filter(appointment => 
@@ -139,8 +139,8 @@ function renderAppointmentsCards(currentDate : DayjsType, appointments : Array<A
         weekday={weekday}
         startTime={formattedStartTime}
         endTime={formattedEndTime}
-        patientId={patient.id}
-        patientName={patient.name}
+        patientId={patient!.id}
+        patientName={patient!.name}
         description={description}
         type={type}
         status={status}
@@ -155,7 +155,7 @@ export interface AppointmentsCalendarProps {
   minWeekday : Weekday;
   maxWeekday : Weekday;
   currentDate : DayjsType;
-  appointments : Array<Appointment>;
+  appointments : Array<Appointment<"patient">>;
 }
 
 //TODO Documentation

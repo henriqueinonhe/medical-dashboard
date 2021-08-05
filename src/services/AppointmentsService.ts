@@ -1,5 +1,7 @@
+import { sortedIndexOf } from "lodash";
 import { apiClient } from "../helpers/apiHelper";
 import { Patient, PatientsService } from "./PatientsService";
+import { assemblePaginatedData, PaginatedData } from "../helpers/paginationHelper";
 
 export type AppointmentType = "firstVisit" | "followUp" |
                               "checkUp" | "exam" |
@@ -9,11 +11,7 @@ export type AppointmentSpecialty = "neurology" | "cardiology" | "general";
 
 export type AppointmentStatus = "pending" | "completed" | "cancelled" | "absent";
 
-export type Appointment = Omit<RawAppointment, "patientId"> & {
-  patient : Patient;
-};
-
-export type RawAppointment = {
+type AppointmentWithoutRelations = {
   id : number;
   specialty : AppointmentSpecialty;
   type : AppointmentType;
@@ -23,7 +21,30 @@ export type RawAppointment = {
   startTime : string;
   endTime : string | null;
   status : AppointmentStatus;
+}
+
+type AppointmentRelations = {
+  patient : Patient;
+}
+
+type AppointmentWithRelations<Relations extends keyof AppointmentRelations> = 
+  Pick<AppointmentRelations, Relations>;
+
+export type Appointment<Relations extends keyof AppointmentRelations = never> = 
+  AppointmentWithoutRelations & AppointmentWithRelations<Relations>;
+
+export type FetchAppointmentsQuery = {
+  _embed ?: keyof AppointmentRelations;
+  _page ?: number;
+  _limit ?: number;
+  _sort ?: keyof Appointment;
+  _order ?: "asc" | "desc";
 };
+
+type FetchAppointmentsReturnType<Query extends FetchAppointmentsQuery> = 
+  Query["_page"] extends number ? 
+    Promise<PaginatedData<Appointment<Query["_embed"] extends keyof AppointmentRelations ? NonNullable<Query["_embed"]> : never>>> :
+    Promise<Array<Appointment<Query["_embed"] extends keyof AppointmentRelations ? NonNullable<Query["_embed"]> : never>>>;
 
 export class AppointmentsService {
   public static displayableAppointmentType : {
@@ -53,32 +74,68 @@ export class AppointmentsService {
     pending: "Pending"
   };
 
-  public static async fetchRawAppointments() : Promise<Array<RawAppointment>> {
-    const response = await apiClient.request({
-      url: "/appointments",
-      method: "GET"
+  private static embedPatients(appointmentsWithoutPatients : Array<Appointment>, patients : Array<Patient>) : Array<Appointment<"patient">> {
+    const patientsIds = patients.map(patient => patient.id);
+    const appointments = appointmentsWithoutPatients.map(appointment => {
+      const correspondingPatientIndex = sortedIndexOf(patientsIds, appointment.patientId);
+      const correspondingPatient = patients[correspondingPatientIndex];
+
+      return {
+        ...appointment,
+        patient: correspondingPatient
+      };
     });
-
-    return response.data;
-  }
-
-  public static async fetchAppointments() : Promise<Array<Appointment>> {
-    const [
-      rawAppointments,
-      patients
-    ] = await Promise.all([
-      this.fetchRawAppointments(),
-      PatientsService.fetchPatients()
-    ]);
-
-    //NOTE If patients are guaranteed to always come sorted by id
-    // this join can be made more efficient by using a binary search
-    const appointments = rawAppointments.map(appointment => ({
-      ...appointment,
-      //TODO Treat case where for some reason the corresponding patient can't be found
-      patient: patients.find(patient => patient.id === appointment.patientId)!
-    })); 
-
+  
     return appointments;
   }
+
+  public static async fetchAppointments<Query extends FetchAppointmentsQuery>(query ?: Query) 
+    : Promise<FetchAppointmentsReturnType<Query>> {
+    const appointmentsResponsePromise = apiClient.request({
+      url: "/appointments",
+      method: "GET",
+      params: {
+        ...query
+      }
+    });
+  
+    if(query?._embed === "patient") {
+      const patientsPromise = PatientsService.fetchPatients({
+        _sort: "id",
+        _order: "asc"
+      });
+
+      const [
+        appointmentsResponse,
+        patients
+      ] = await Promise.all([
+        appointmentsResponsePromise,
+        await patientsPromise
+      ]);
+
+      const appointments = appointmentsResponse.data;
+      const appointmentsWithPatients = AppointmentsService.embedPatients(appointments, patients);
+
+      if(query?._page) {
+        return {
+          data: appointmentsWithPatients,
+          meta: assemblePaginatedData(appointmentsResponse)
+        };
+      }
+  
+      return appointmentsWithPatients;
+    }
+
+    const appointmentsResponse = await appointmentsResponsePromise;
+
+    if(query?._page) {
+      return {
+        data: appointmentsResponse.data,
+        meta: assemblePaginatedData(appointmentsResponse)
+      };
+    }
+
+    return appointmentsResponse.data;
+  }
 }
+

@@ -42,20 +42,29 @@ const NavLink = styled(({active, ...props}) => <Link {...props} />)<NavLinkProps
 
 export function DoctorDashboardPage() : JSX.Element {
   const [patients, setPatients] = useState<Array<Patient>>([]);
-  const [appointments, setAppointments] = useState<Array<Appointment>>([]);
+  const [appointments, setAppointments] = useState<Array<Appointment<"patient">>>([]);
   const [dataIsLoading, setDataIsLoading] = useState(true);
   const isMounted = useIsMounted();
   const location = useLocation();
   
   useAsync(isMounted, async () => {
-    return await Promise.all([
-      PatientsService.fetchPatients(),
-      AppointmentsService.fetchAppointments()
-    ]);
-  }, ([fetchedPatients, fetchedAppointments]) => {
-    //NOTE Maybe this could be moved to the calendar itself
+    
+    return await AppointmentsService.fetchAppointments({
+      _embed: "patient"
+    });
+
+  }, (fetchedAppointments) => {
     const filteredAppointments = fetchedAppointments
       .filter(appointment => 0 < Dayjs(appointment.startTime).day() && Dayjs(appointment.startTime).day() < 6);
+
+    //TEMP
+    const fetchedPatients : Array<Patient> = [];
+    for(const appointment of fetchedAppointments) {
+      if(!fetchedPatients.some(patient => patient.id === appointment.patientId)) {
+        fetchedPatients.push(appointment.patient!);
+      }
+    }
+
     setPatients(fetchedPatients);
     setAppointments(filteredAppointments);
   }, [], setDataIsLoading);

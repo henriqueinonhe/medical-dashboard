@@ -23,7 +23,7 @@ const AppointmentsHistoryEntryList = styled.div`
 `;
 
 export interface AppointmentsHistory {
-  appointments : Array<Appointment>;
+  appointments : Array<Appointment<"patient">>;
 }
 
 export const AppointmentsHistory = React.memo((props : AppointmentsHistory) => {

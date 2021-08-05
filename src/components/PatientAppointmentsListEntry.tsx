@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { AppointmentsService, RawAppointment } from "../services/AppointmentsService";
+import { AppointmentsService, Appointment } from "../services/AppointmentsService";
 import { AppointmentStatusChip } from "./AppointmentStatusChip";
 import Dayjs from "../helpers/dayjs";
 import { Link, useParams } from "react-router-dom";
@@ -43,7 +43,7 @@ const StatusChip = styled(AppointmentStatusChip)`
 `;
 
 export interface PatientAppointmentsListEntryProps {
-  appointment : RawAppointment;
+  appointment : Appointment;
   isActive : boolean;
 }
 
