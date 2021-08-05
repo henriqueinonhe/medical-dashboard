@@ -28,6 +28,7 @@ const Container = styled(({
   flex-direction: column;
   width: 100%;
   height: 100%;
+  min-height: 100px;
   background-color: #4a7dff;
   border-radius: 3px;
   padding: 10px;

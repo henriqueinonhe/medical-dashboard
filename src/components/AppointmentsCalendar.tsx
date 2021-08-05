@@ -43,7 +43,7 @@ function generateGridTemplateRows(availableTimes : Array<AllowedTime>) : string 
   //One row for the weekdays labels and then one for each
   //available time
   return `
-    auto ${availableTimes.map(time => `[${formatAllowedTime(time)}] 100px`).join(" ")}
+    auto ${availableTimes.map(time => `[${formatAllowedTime(time)}] auto`).join(" ")}
   `;
 }
 
@@ -75,6 +75,7 @@ interface AppointmentCardUnderlayProps {
 const AppointmentCardUnderlay = styled.div<AppointmentCardUnderlayProps>`
   border-radius: 3px;
   border: 1px dashed #a8a8a8;
+  min-height: 100px;
 
   grid-column-start: ${props => props.weekday};
   grid-row-start: ${props => formatAllowedTime(props.startTime)};
