@@ -28,9 +28,23 @@ const TypeField = styled.span`
   font-size: 24px;
 `;
 
-const DescriptionField = styled.span`
-  margin-top: 20px;
-  margin-left: 40px;
+const DescriptionField = styled.div`
+  margin-top: 10px;
+  margin-left: 20px;
+  padding: 20px;
+  resize: none;
+  border: none;
+  border-radius: 3px;
+
+  &:hover {
+    background-color: #EEE;
+  }
+
+  &:focus {
+    background-color: #EEE;
+    border: none;
+    outline: none;
+  }
 `;
 
 export interface PatientAppointmentDetailsProps {
@@ -60,7 +74,7 @@ export const PatientAppointmentDetails = React.memo((props : PatientAppointmentD
 
       <TypeField>{displayableType} says:</TypeField>
 
-      <DescriptionField>{description}</DescriptionField>
+      <DescriptionField contentEditable>{description}</DescriptionField>
     </Container>
   );
 });
