@@ -59,7 +59,7 @@ export const PatientAppointmentDetails = React.memo((props : PatientAppointmentD
   const {
     startTime,
     type,
-    description
+    notes
   } = appointment;
 
   const displayableDate = Dayjs(startTime).format("MM/DD/YYYY");
@@ -74,7 +74,7 @@ export const PatientAppointmentDetails = React.memo((props : PatientAppointmentD
 
       <TypeField>{displayableType} says:</TypeField>
 
-      <DescriptionField contentEditable>{description}</DescriptionField>
+      <DescriptionField contentEditable>{notes}</DescriptionField>
     </Container>
   );
 });
