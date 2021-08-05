@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import DoctorDashboardPage from "./pages/DoctorDashboardPage";
 import PatientDetailsPage from "./pages/PatientDetailsPage";
 
@@ -58,12 +58,17 @@ const GlobalStyles = createGlobalStyle`
   }
 
   * {
+    position: relative;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Arial";
     color: #333;
   }
+`;
+
+const TooltipContainer = styled.div`
+
 `;
 
 export function App() : JSX.Element {
@@ -89,6 +94,8 @@ export function App() : JSX.Element {
           <Redirect to="/dashboard/calendar"/>
         </Switch>
       </BrowserRouter>
+
+      <TooltipContainer id="tooltipContainer" />
     </>
   );
 }
