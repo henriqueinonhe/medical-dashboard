@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Appointment } from "../services/AppointmentsService";
+import { Appointment, AppointmentsService } from "../services/AppointmentsService";
 import { AppointmentsHistoryEntry } from "./AppointmentsHistoryEntry";
 import { DoctorDashboardComponentContainer } from "./DoctorDashboardComponentContainer";
-import Dayjs from "../helpers/dayjs";
+import { useAsync, useIsMounted } from "@henriqueinonhe/react-hooks";
+import { SpinnerWrapper } from "./SpinnerWrapper";
 
 const Container = styled(DoctorDashboardComponentContainer)`
   min-width: 320px;
@@ -22,32 +23,40 @@ const AppointmentsHistoryEntryList = styled.div`
   padding: 12px;
 `;
 
-export interface AppointmentsHistory {
-  appointments : Array<Appointment<"patient">>;
-}
+export const AppointmentsHistory = React.memo(() => {
+  const [appointments, setAppointments] = useState<Array<Appointment<"patient">>>([]);
+  const [dataIsLoading, setDataIsLoading] = useState(true);
+  const isMounted = useIsMounted();
 
-export const AppointmentsHistory = React.memo((props : AppointmentsHistory) => {
-  const {
-    appointments
-  } = props;
+  useAsync(isMounted, async () => {
 
-  const appointmentsSortedByNewest = appointments.sort((first, second) => 
-    Dayjs(first.startTime).isBefore(Dayjs(second.startTime)) ? 1 : -1);
+    return await AppointmentsService.fetchAppointments({
+      _embed: "patient",
+      _sort: "startTime",
+      _order: "desc"
+    });
+
+  }, (fetchedAppointments) => {
+    
+    setAppointments(fetchedAppointments);
+
+  }, [], setDataIsLoading);
 
   return (
     <Container>
       <HistoryLabel>History</HistoryLabel>
 
-      <AppointmentsHistoryEntryList>
-        {
-          appointmentsSortedByNewest.map(appointment =>
-            <AppointmentsHistoryEntry 
-              key={appointment.id}
-              appointment={appointment}
-            />)
-        }
-      </AppointmentsHistoryEntryList>
-
+      <SpinnerWrapper isLoading={dataIsLoading}>
+        <AppointmentsHistoryEntryList>
+          {
+            appointments.map(appointment =>
+              <AppointmentsHistoryEntry 
+                key={appointment.id}
+                appointment={appointment}
+              />)
+          }
+        </AppointmentsHistoryEntryList>
+      </SpinnerWrapper>
     </Container>
   );
 });

@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useParams } from "react-router";
 import { PageLayout } from "../components/PageLayout";
 import { PatientInfo } from "../components/PatientInfo";
-import { AppointmentsService, Appointment } from "../services/AppointmentsService";
 import { Patient, PatientsService } from "../services/PatientsService";
 import { PatientAppointmentsInfo } from "../components/PatientAppointmentsInfo";
 import styled from "styled-components";

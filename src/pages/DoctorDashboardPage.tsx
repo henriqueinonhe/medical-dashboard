@@ -1,16 +1,11 @@
-import React, { useState } from "react";
-import { AppointmentsCalendar } from "../components/AppointmentsCalendar";
+import React from "react";
 import { AppointmentsHistory } from "../components/AppointmentsHistory";
 import { PageLayout } from "../components/PageLayout";
-import Dayjs from "../helpers/dayjs";
-import { Appointment, AppointmentsService } from "../services/AppointmentsService";
-import { Patient, PatientsService } from "../services/PatientsService";
-import { useAsync, useIsMounted } from "@henriqueinonhe/react-hooks";
 import { PatientsList } from "../components/PatientsList";
 import { Route, Switch, useLocation } from "react-router";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { SpinnerWrapper } from "../components/SpinnerWrapper";
+import { AppointmentsCalendarContainer } from "../components/AppointmentsCalendarContainer";
 
 const NavLinkList = styled.div`
   display: flex;
@@ -22,6 +17,7 @@ const NavLinkList = styled.div`
   padding: 24px;
   background-color: white;
   border-radius: 3px;
+  margin-bottom: 20px;
 `;
 
 interface NavLinkProps {
@@ -41,88 +37,46 @@ const NavLink = styled(({active, ...props}) => <Link {...props} />)<NavLinkProps
 `;
 
 export function DoctorDashboardPage() : JSX.Element {
-  const [patients, setPatients] = useState<Array<Patient>>([]);
-  const [appointments, setAppointments] = useState<Array<Appointment<"patient">>>([]);
-  const [dataIsLoading, setDataIsLoading] = useState(true);
-  const isMounted = useIsMounted();
   const location = useLocation();
-  
-  useAsync(isMounted, async () => {
-    
-    return await AppointmentsService.fetchAppointments({
-      _embed: "patient"
-    });
-
-  }, (fetchedAppointments) => {
-    const filteredAppointments = fetchedAppointments
-      .filter(appointment => 0 < Dayjs(appointment.startTime).day() && Dayjs(appointment.startTime).day() < 6);
-
-    //TEMP
-    const fetchedPatients : Array<Patient> = [];
-    for(const appointment of fetchedAppointments) {
-      if(!fetchedPatients.some(patient => patient.id === appointment.patientId)) {
-        fetchedPatients.push(appointment.patient!);
-      }
-    }
-
-    setPatients(fetchedPatients);
-    setAppointments(filteredAppointments);
-  }, [], setDataIsLoading);
 
   return (
     <PageLayout>
-      {
-        <SpinnerWrapper isLoading={dataIsLoading}>
-          <NavLinkList>
-            <NavLink
-              to="/dashboard/calendar"
-              active={location.pathname === "/dashboard/calendar"}
-            >
-              Calendar
-            </NavLink>
+      <NavLinkList>
+        <NavLink
+          to="/dashboard/calendar"
+          active={location.pathname === "/dashboard/calendar"}
+        >
+          Calendar
+        </NavLink>
 
-            <NavLink
-              to="/dashboard/history"
-              active={location.pathname === "/dashboard/history"}
-            >
-              History
-            </NavLink>
+        <NavLink
+          to="/dashboard/history"
+          active={location.pathname === "/dashboard/history"}
+        >
+          History
+        </NavLink>
 
-            <NavLink
-              to="/dashboard/patients"
-              active={location.pathname === "/dashboard/patients"}
-            >
-              Patients
-            </NavLink>
-          </NavLinkList>
+        <NavLink
+          to="/dashboard/patients"
+          active={location.pathname === "/dashboard/patients"}
+        >
+          Patients
+        </NavLink>
+      </NavLinkList>
 
-          <Switch>
-            <Route path="/dashboard/calendar">
-              <AppointmentsCalendar 
-                minWeekday="monday"
-                maxWeekday="friday"
-                minTime="09:00"
-                maxTime="18:00"
-                currentDate={Dayjs()}
-                appointments={appointments}
-              />
-            </Route>
+      <Switch>
+        <Route path="/dashboard/calendar">
+          <AppointmentsCalendarContainer />
+        </Route>
 
-            <Route path="/dashboard/history">
-              <AppointmentsHistory 
-                appointments={appointments}
-              />
-            </Route>
+        <Route path="/dashboard/history">
+          <AppointmentsHistory />
+        </Route>
 
-            <Route path="/dashboard/patients">
-              <PatientsList 
-                patients={patients}
-              />
-            </Route>
-          </Switch>
-        </SpinnerWrapper>
-      }
-      
+        <Route path="/dashboard/patients">
+          <PatientsList />
+        </Route>
+      </Switch>
     </PageLayout>
   );
 }

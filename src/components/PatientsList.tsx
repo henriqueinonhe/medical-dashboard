@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Patient } from "../services/PatientsService";
+import { Patient, PatientsService } from "../services/PatientsService";
 import { DoctorDashboardComponentContainer } from "./DoctorDashboardComponentContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { computeCurrentAge } from "../helpers/ageHelper";
 import { Link } from "react-router-dom";
+import { asyncCallback, useIsMounted } from "@henriqueinonhe/react-hooks";
+import { SpinnerWrapper } from "./SpinnerWrapper";
 
 const Container = styled(DoctorDashboardComponentContainer)``;
 
@@ -90,38 +92,56 @@ const PatientAgeField = styled.span`
   margin-left: 20px;
 `;
 
-function selectDisplayedPatients(patients : Array<Patient>, page : number, perPage : number) : Array<Patient> {
-  const lowerBoundIndex = (page - 1) * perPage;
-  const upperBoundIndex = page * perPage;
-
-  return patients.slice(lowerBoundIndex, upperBoundIndex);
-}
-
 export interface PatientsListProps {
-  patients : Array<Patient>;
   patientsPerPage ?: number;
 }
 
 export const PatientsList = React.memo((props : PatientsListProps) => {
   const {
-    patients,
     patientsPerPage = 10
   } = props;
 
   const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [patients, setPatients] = useState<Array<Patient>>([]);
+  const [dataIsLoading, setDataIsLoading] = useState(true);
+  const isMounted = useIsMounted();
 
-  const lastPage = Math.max(Math.ceil(patients.length / patientsPerPage), 1);
-  const displayedPatients = selectDisplayedPatients(patients, page, patientsPerPage);
+  useEffect(() => {
+    fetchPatients(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function fetchPatients(page : number) : void {
+    asyncCallback(isMounted, async () => {
+
+      return await PatientsService.fetchPatients({
+        _page: page,
+        _embed: "appointments",
+        _limit: patientsPerPage
+      });
+
+    }, (paginatedPatients) => {
+
+      setLastPage(paginatedPatients.meta.lastPage);
+      setPatients(paginatedPatients.data);
+
+    }, setDataIsLoading);
+  } 
 
   function goToPreviousPage() : void {
     if(page > 1) {
-      setPage(page => page - 1);
+      const previousPage = page - 1;
+      setPage(previousPage);
+      fetchPatients(previousPage);
     }
   }
 
   function goToNextPage() : void {
     if(page < lastPage) {
-      setPage(page => page + 1);
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchPatients(nextPage);
     }
   }
 
@@ -141,18 +161,20 @@ export const PatientsList = React.memo((props : PatientsListProps) => {
         />
       </PageNavigationRow>
 
-      <PatientEntriesContainer>
-        {
-          displayedPatients.map(patient =>
-            <PatientEntry
-              key={patient.id}
-              to={`/patientDetails/${patient.id}`}
-            >
-              <PatientNameField>{patient.name}</PatientNameField>
-              <PatientAgeField>{`${computeCurrentAge(patient.birthday)} y/o`}</PatientAgeField>
-            </PatientEntry>)
-        }
-      </PatientEntriesContainer>
+      <SpinnerWrapper isLoading={dataIsLoading}>
+        <PatientEntriesContainer>
+          {
+            patients.map(patient =>
+              <PatientEntry
+                key={patient.id}
+                to={`/patientDetails/${patient.id}`}
+              >
+                <PatientNameField>{patient.name}</PatientNameField>
+                <PatientAgeField>{`${computeCurrentAge(patient.birthday)} y/o`}</PatientAgeField>
+              </PatientEntry>)
+          }
+        </PatientEntriesContainer>
+      </SpinnerWrapper>
     </Container>
   );
 });
