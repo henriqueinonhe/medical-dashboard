@@ -7,6 +7,7 @@ import { Appointment, AppointmentsService } from "../services/AppointmentsServic
 import { Patient, PatientsService } from "../services/PatientsService";
 import { useAsync, useIsMounted } from "@henriqueinonhe/react-hooks";
 import { PatientsList } from "../components/PatientsList";
+import { Route, Switch } from "react-router";
 
 export function DoctorDashboard() : JSX.Element {
   const [patients, setPatients] = useState<Array<Patient>>([]);
@@ -32,24 +33,30 @@ export function DoctorDashboard() : JSX.Element {
       {
         dataIsLoading ?
           <>Loading...</> :
-          <>
-            <AppointmentsCalendar 
-              minWeekday="monday"
-              maxWeekday="friday"
-              minTime="09:00"
-              maxTime="18:00"
-              currentDate={Dayjs()}
-              appointments={appointments}
-            />
+          <Switch>
+            <Route path="/dashboard/calendar">
+              <AppointmentsCalendar 
+                minWeekday="monday"
+                maxWeekday="friday"
+                minTime="09:00"
+                maxTime="18:00"
+                currentDate={Dayjs()}
+                appointments={appointments}
+              />
+            </Route>
 
-            <AppointmentsHistory 
-              appointments={appointments}
-            />
+            <Route path="/dashboard/history">
+              <AppointmentsHistory 
+                appointments={appointments}
+              />
+            </Route>
 
-            <PatientsList 
-              patients={patients}
-            />
-          </>
+            <Route path="/dashboard/patients">
+              <PatientsList 
+                patients={patients}
+              />
+            </Route>
+          </Switch>
       }
       
     </PageLayout>

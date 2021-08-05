@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import PatientDetails from "./pages/PatientDetails";
@@ -73,7 +73,7 @@ export function App() : JSX.Element {
       <GlobalStyles />
       <BrowserRouter>
         <Switch>
-          <Route exact path="/">
+          <Route path="/dashboard">
             {/* TODO Lazy Load */}
             <DoctorDashboard /> 
           </Route>
@@ -87,6 +87,7 @@ export function App() : JSX.Element {
             {/* TODO Lazy Load */}
             <PatientDetails />
           </Route>
+          <Redirect to="/dashboard/calendar"/>
         </Switch>
       </BrowserRouter>
     </>
