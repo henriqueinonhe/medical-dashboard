@@ -7,6 +7,19 @@ import { PatientInfo } from "../components/PatientInfo";
 import { AppointmentsService, RawAppointment } from "../services/AppointmentsService";
 import { Patient, PatientsService } from "../services/PatientsService";
 import { PatientAppointmentsInfo } from "../components/PatientAppointmentsInfo";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+
+const LeftArrowIcon = styled(FontAwesomeIcon).attrs(() => ({
+  icon: faArrowLeft
+})) `
+  margin-top: 20px;
+  margin-left: 22px;
+  font-size: 60px;
+  cursor: pointer;
+`;
 
 export function PatientDetailsPage() : JSX.Element {
   const { patientId : patientIdSlug, appointmentId : appointmenIdSlug } = 
@@ -40,6 +53,10 @@ export function PatientDetailsPage() : JSX.Element {
         dataIsLoading ?
           <>Loading ... </> :
           <>
+            <Link to="/dashboard/calendar">
+              <LeftArrowIcon />
+            </Link>
+
             <PatientInfo 
               patient={patient!}
               lastAppointment={lastAppointment}
