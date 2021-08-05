@@ -120,7 +120,7 @@ const config = env => {
       }),
       new WatchMissingNodeModulesPlugin(),
       new HtmlWebpackPlugin({
-        title: "Title",
+        title: "Medical Dashboard",
         filename: "index.html",
         meta: { viewport: "width=device-width, initial-scale=1, user-scalable=no" },
         chunks: ["index"]
