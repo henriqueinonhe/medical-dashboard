@@ -17,7 +17,8 @@ const CircularDependencyPlugin = require("circular-dependency-plugin");
 //Initializing Environment Variables
 dotenv.config();
 const environmentVariables = [
-  "API_BASE_URL"
+  "API_BASE_URL",
+  "TEST_ENVIRONMENT"
 ];
 
 const config = env => {

@@ -1,5 +1,6 @@
-describe("End to end testing", () => {
-  it("Dubs", () => {
-    cy.visit("/");
+describe("Doctor's Dashboard", () => {
+  it("Appointments Calendar", () => {
+    cy.visit("/dashboard/calendar");
+    
   });
 });
