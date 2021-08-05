@@ -32,6 +32,12 @@ const Container = styled(({
   padding: 10px;
   cursor: pointer;
   text-decoration: none;
+  transition: 350ms;
+  transition-timing-function: ease-out;
+
+  &:hover {
+    transform: translateY(-12px);
+  }
 
   //TEMP
   overflow: hidden;

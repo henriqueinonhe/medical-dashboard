@@ -66,7 +66,6 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-
 export function App() : JSX.Element {
   return (
     <>

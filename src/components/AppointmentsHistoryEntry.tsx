@@ -14,6 +14,11 @@ const Container = styled(Link)`
   border-bottom: 1px solid #a8a8a8;
   text-decoration: none;
   cursor: pointer;
+  transition: 80ms;
+
+  &:hover {
+    background-color: #dbdbdb;
+  }
 
   &:last-of-type {
     border-bottom: none;
