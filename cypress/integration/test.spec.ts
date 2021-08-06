@@ -26,12 +26,11 @@ describe("Doctor's Dashboard", () => {
     const secondEndTime =  a2.endTime ? Dayjs(a2.endTime) : Dayjs(a2.startTime).add(30, "minutes");
 
     return firstStartTime.isSame(secondStartTime) ||
-             firstEndTime.isSame(secondStartTime) ||
-             secondEndTime.isSame(firstStartTime);
+           firstEndTime.isSame(secondEndTime);
              
   }
 
-  const uniqueAppointments = uniqWith(appointments, (a1, a2) => appointmentTimesOverlap(a1, a2));
+  const uniqueAppointments = uniqWith(appointments, appointmentTimesOverlap);
 
   it("Appointments Calendar", () => {
     cy.intercept({
@@ -86,8 +85,6 @@ describe("Doctor's Dashboard", () => {
         .should("contain.text", patient.name)
         .should("contain.text", displayableType)
         .should("contain.text", displayableStatus)
-        .trigger("onmouseover")
-        .should("contain.text", appointment.description)
         .click();
 
 

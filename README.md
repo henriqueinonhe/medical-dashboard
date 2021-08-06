@@ -108,7 +108,7 @@ To run unit tests:
 npx jest
 ```
 
-To run UI Integration tests, you may either run them in headless mode
+To run UI Integration tests you must first **serve** the web server (e.g. `npm run dev-start`), set `TEST_ENVIRONMENT` environment variable to `true` and then you may either run them in headless mode
 
 ```sh
 npx cypress run
