@@ -1,5 +1,5 @@
 import { Appointment, AppointmentSpecialty, AppointmentStatus, AppointmentType } from "../src/services/AppointmentsService";
-import { random as randomNumber, sample } from "lodash";
+import { random as randomNumber, sample, uniqWith } from "lodash";
 //This is one is a hell of a LoL player!
 import faker from "faker";
 import { computeAvailableTimes } from "../src/helpers/calendarHelper";
@@ -35,7 +35,7 @@ export function randomStartTime() : string {
 
 export function randomEndTime(startTime : string) : string {
   const halfHours = randomNumber(1, 2);
-  const dateTime = Dayjs(startTime).add(halfHours * 30).toISOString();
+  const dateTime = Dayjs(startTime).add(halfHours * 30, "minutes").toISOString();
 
   return dateTime;
 }
@@ -119,8 +119,19 @@ export function randomPatient() : Patient<"appointments"> {
   const patientWithoutRelations = randomPatientWithoutRelations();
   const appointments = randomList(() => randomAppoinmentWithoutRelations(patientWithoutRelations.id), randomNumber(20));
 
+  function appointmentTimesOverlap(a1 : Appointment, a2 : Appointment) : boolean {
+    const firstStartTime = Dayjs(a1.startTime);
+    const secondStartTime = Dayjs(a2.startTime);
+    const firstEndTime =  a1.endTime ? Dayjs(a1.endTime) : Dayjs(a1.startTime).add(30, "minutes");
+    const secondEndTime =  a2.endTime ? Dayjs(a2.endTime) : Dayjs(a2.startTime).add(30, "minutes");
+
+    return firstStartTime.isSame(secondStartTime) ||
+             firstEndTime.isSame(secondStartTime) ||
+             secondEndTime.isSame(firstStartTime);
+  }
+
   return {
     ...patientWithoutRelations,
-    appointments
+    appointments: uniqWith(appointments, appointmentTimesOverlap)
   };
 }

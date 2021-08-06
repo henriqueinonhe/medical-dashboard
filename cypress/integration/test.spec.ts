@@ -1,11 +1,12 @@
 import { sample, uniqWith, sortBy, reverse, chunk } from "lodash";
 import { Appointment, AppointmentsService } from "../../src/services/AppointmentsService";
-import { randomAppoinmentWithoutRelations, randomList, randomPatientWithoutRelations } from "../../testHelpers/random";
+import { randomAppoinmentWithoutRelations, randomList, randomPatient, randomPatientWithoutRelations } from "../../testHelpers/random";
 import Dayjs from "../../src/helpers/dayjs";
 import { generateAppointmentCardCypressDataSelector } from "../../src/helpers/cypressHelper";
 import { dateToWeekday, dateToAllowedTime } from "../../src/helpers/calendarHelper";
 import { PatientsService } from "../../src/services/PatientsService";
 import { computeCurrentAge } from "../../src/helpers/ageHelper";
+import { computePreviousAppointments, computeRecentAppointments, computeUpcomingAppointments } from "../../src/helpers/appointmentsHelper";
  
 describe("Doctor's Dashboard", () => {
   const patients = randomList(randomPatientWithoutRelations, 15);
@@ -260,6 +261,68 @@ describe("Doctor's Dashboard", () => {
         cy.get("[data-cy=patientsListGoToNextPage]")
           .click();
       }
+    });
+  });
+});
+
+describe("Patients Details", () => {
+  it.only("Patient Info", () => {
+    const patient = randomPatient();
+  
+    cy.intercept({
+      pathname: `/api/patients/${patient.id}`,
+      method: "GET"
+    }, {
+      body: patient
+    });
+    
+    cy.visit(`/patientDetails/${patient.id}`);
+
+    cy.contains(patient.name);
+    cy.contains(PatientsService.displayableDocument(patient.document));
+    cy.contains(PatientsService.displayableHealthSystemId(patient.healthSystemId));
+    cy.contains(`${computeCurrentAge(patient.birthday)} y/o`);
+
+    const recentAppointments = computeRecentAppointments(patient.appointments);
+    const upcomingAppointments = computeUpcomingAppointments(patient.appointments);
+    const previousAppointments = computePreviousAppointments(patient.appointments);
+    
+
+    recentAppointments.forEach(appointment => {
+      const displayableType = AppointmentsService.displayableAppointmentType[appointment.type];
+      const displayableStatus = AppointmentsService.displayableAppointmentStatus[appointment.status];
+
+      cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
+        .should("contain.text", displayableType)
+        .should("contain.text", displayableStatus)
+        .click();
+
+      cy.contains(appointment.notes);
+    });
+
+    cy.contains("Upcoming").click();
+
+    upcomingAppointments.forEach(appointment => {
+      const displayableType = AppointmentsService.displayableAppointmentType[appointment.type];
+
+      cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
+        .parent()
+        .should("contain.text", displayableType)
+        .click();
+
+      cy.contains(appointment.notes);
+    });
+
+    cy.contains("History").click();
+
+    previousAppointments.forEach(appointment => {
+      const displayableType = AppointmentsService.displayableAppointmentType[appointment.type];
+
+      cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
+        .should("contain.text", displayableType)
+        .click();
+
+      cy.contains(appointment.notes);
     });
   });
 });

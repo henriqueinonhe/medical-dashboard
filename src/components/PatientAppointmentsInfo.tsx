@@ -92,18 +92,21 @@ export const PatientAppointmentsInfo = React.memo((props : PatientAppointmentsIn
         <NavigationTab 
           onClick={() => setActiveTab("Recent")}
           isActive={activeTab === "Recent"}
+          data-cy={cypressDataSelector("patientDetailsRecentTab")}
         >
           Recent
         </NavigationTab>
         <NavigationTab 
           onClick={() => setActiveTab("Upcoming")}
           isActive={activeTab === "Upcoming"}
+          data-cy={cypressDataSelector("patientDetailsUpcomingTab")}
         >
           Upcoming
         </NavigationTab>
         <NavigationTab 
           onClick={() => setActiveTab("History")}
           isActive={activeTab === "History"}
+          data-cy={cypressDataSelector("patientDetailsHistoryTab")}
         >
           History
         </NavigationTab>
