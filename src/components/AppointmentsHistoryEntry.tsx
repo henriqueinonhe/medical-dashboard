@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Appointment, AppointmentsService } from "../services/AppointmentsService";
 import { AppointmentStatusChip } from "./AppointmentStatusChip";
 import { Link } from "react-router-dom";
+import { cypressDataSelector } from "../helpers/cypressHelper";
 
 const Container = styled(Link)`
   display: flex;
@@ -101,7 +102,10 @@ export const AppointmentsHistoryEntry = React.memo((props : AppointmentsHistoryE
   const displayableType = AppointmentsService.displayableAppointmentType[type];
 
   return (
-    <Container to={`/patientDetails/${patient!.id}/appointments/${id}`}>
+    <Container 
+      to={`/patientDetails/${patient!.id}/appointments/${id}`} 
+      data-cy={cypressDataSelector("appointmentsHistoryEntry")}
+    >
       <LeftColumn>
         <DateTimeContainer>
           <DateField>{displayableDate}</DateField>
