@@ -8,6 +8,7 @@ import { computeCurrentAge } from "../helpers/ageHelper";
 import { Link } from "react-router-dom";
 import { asyncCallback, useIsMounted } from "@henriqueinonhe/react-hooks";
 import { SpinnerWrapper } from "./SpinnerWrapper";
+import { cypressDataSelector } from "../helpers/cypressHelper";
 
 const Container = styled(DoctorDashboardComponentContainer)``;
 
@@ -158,6 +159,7 @@ export const PatientsList = React.memo((props : PatientsListProps) => {
         <GoToNextPageIcon 
           onClick={goToNextPage}
           disabled={page === lastPage}  
+          data-cy={cypressDataSelector("patientsListGoToNextPage")}
         />
       </PageNavigationRow>
 

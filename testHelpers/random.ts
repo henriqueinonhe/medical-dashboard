@@ -96,7 +96,7 @@ export function randomPatientWithoutRelations(id ?: number) : Patient {
     name: faker.name.findName(),
     document: randomDocument(),
     healthSystemId: randomHealthSystemId(),
-    birthday: faker.date.past().toISOString(),
+    birthday: faker.date.past(randomNumber(70)).toISOString(),
     insurancePlan: randomInsurancePlan()
   };
 }

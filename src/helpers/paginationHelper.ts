@@ -15,6 +15,9 @@ export function assemblePaginatedData(response : AxiosResponse) : PaginationMeta
   const linkHeader = response.headers["link"] ?? {};
   const parsedLinkHeader = parseLinkHeader(linkHeader)!;
 
+  console.log(linkHeader);
+  console.log(parsedLinkHeader);
+
   return {
     lastPage : parseInt(parsedLinkHeader?.last?._page ?? 1),
     total : response.headers?.["x-total-count"]

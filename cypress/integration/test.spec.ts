@@ -1,4 +1,4 @@
-import { sample, uniqWith, sortBy, reverse } from "lodash";
+import { sample, uniqWith, sortBy, reverse, chunk } from "lodash";
 import { Appointment, AppointmentsService } from "../../src/services/AppointmentsService";
 import { randomAppoinmentWithoutRelations, randomList, randomPatientWithoutRelations } from "../../testHelpers/random";
 import Dayjs from "../../src/helpers/dayjs";
@@ -6,10 +6,9 @@ import { generateAppointmentCardCypressDataSelector } from "../../src/helpers/cy
 import { dateToWeekday, dateToAllowedTime } from "../../src/helpers/calendarHelper";
 import { PatientsService } from "../../src/services/PatientsService";
 import { computeCurrentAge } from "../../src/helpers/ageHelper";
-import { computePreviousAppointments, computeRecentAppointments, computeUpcomingAppointments } from "../../src/helpers/appointmentsHelper";
  
 describe("Doctor's Dashboard", () => {
-  const patients = randomList(randomPatientWithoutRelations, 10);
+  const patients = randomList(randomPatientWithoutRelations, 15);
   const appointments = randomList(randomAppoinmentWithoutRelations, 40)
     .map(appointment => ({
       ...appointment,
@@ -107,7 +106,7 @@ describe("Doctor's Dashboard", () => {
     });
   });
 
-  it.only("Appointments History", () => {
+  it("Appointments History", () => {
     const sortedAppointments = reverse(sortBy(uniqueAppointments, "startTime"));
 
     cy.intercept({
@@ -199,6 +198,68 @@ describe("Doctor's Dashboard", () => {
       cy.get("[data-cy=patientDetailsLeftArrowIcon]").click();
       cy.contains("History").click();
     });
-      
+  });
+
+  it("Patients List", () => {
+    patients.forEach(patient => {
+      const relatedAppointments = uniqueAppointments
+        .filter(appointment => appointment.patientId === patient.id);
+
+      cy.intercept({
+        pathname: `/api/patients/${patient.id}`,
+        method: "GET"
+      }, {
+        body: {
+          ...patient,
+          appointments: relatedAppointments
+        }
+      });
+    });
+
+    cy.intercept({
+      pathname: "/api/appointments",
+      method: "GET"
+    }, {
+      body: uniqueAppointments
+    });
+
+    cy.intercept({
+      pathname: "/api/patients",
+      method: "GET"
+    }, {
+      body: patients.slice(0, 10),
+      headers: {
+        link: `<http://localhost:8080/api/patients?_page=1&_limit=10>; rel="first", <http://localhost:8080/api/patients?_page=2&_limit=10>; rel="next", <http://localhost:8080/api/patients?_page=2&_limit=10>; rel="last"`,
+        "x-total-count": patients.length.toString()
+      }
+    });
+
+    cy.visit("/dashboard/patients");
+
+    const partitionedPatients = chunk(patients, 10);
+    partitionedPatients.forEach((partition, index) => {
+
+      partition.forEach(patient => {
+        cy.contains(patient.name)
+          .contains(computeCurrentAge(patient.birthday));
+      });
+
+      if(index + 1 < partitionedPatients.length) {
+        cy.intercept({
+          pathname: "/api/patients",
+          method: "GET"
+        }, {
+          body: partitionedPatients[index + 1], 
+          headers: {
+            link: `<http://localhost:8080/api/patients?_page=2&_limit=10>; rel="last"`,
+            "x-total-count": patients.length.toString()
+          }
+        });
+        
+  
+        cy.get("[data-cy=patientsListGoToNextPage]")
+          .click();
+      }
+    });
   });
 });
