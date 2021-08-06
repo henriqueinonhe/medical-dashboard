@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Appointment } from "../services/AppointmentsService";
-import Dayjs from "../helpers/dayjs";
 import { PatientAppointmentsListEntry } from "./PatientAppointmentsListEntry";
 import { PatientAppointmentDetails } from "./PatientAppointmentDetails";
+import { computePreviousAppointments, computeRecentAppointments, computeUpcomingAppointments, isRecentAppointment, isUpcomingAppointment } from "../helpers/appointmentsHelper";
+import { cypressDataSelector } from "../helpers/cypressHelper";
 
 const Container = styled.div`
   display: flex;
@@ -45,40 +46,6 @@ const AppointmentsList = styled.div`
 `;
 
 type Tab = "Recent" | "Upcoming" | "History";
-
-function isUpcomingAppointment(appointment : Appointment) : boolean {
-  const now = Dayjs();
-  const appointmentDate = Dayjs(appointment.startTime);
-  return now.isBefore(appointmentDate);
-}
-
-function isPreviousAppointment(appointment : Appointment) : boolean {
-  const now = Dayjs();
-  const appointmentDate = Dayjs(appointment.startTime);
-  return now.isAfter(appointmentDate);
-}
-
-function isRecentAppointment(appointment : Appointment) : boolean {
-  const now = Dayjs();
-  const appointmentDate = Dayjs(appointment.startTime);
-  const appointmentWasAtMostOneWeekAgo = 
-    now.diff(appointmentDate, "days", true) <= 7 &&
-    isPreviousAppointment(appointment);
-
-  return appointmentWasAtMostOneWeekAgo;
-}
-
-function computeRecentAppointments(appointments : Array<Appointment>) : Array<Appointment> {
-  return appointments.filter(appointment => isRecentAppointment(appointment));
-}
-
-function computeUpcomingAppointments(appointments : Array<Appointment>) : Array<Appointment> {
-  return appointments.filter(appointment => isUpcomingAppointment(appointment));
-}
-
-function computePreviousAppointments(appointments : Array<Appointment>) : Array<Appointment> {
-  return appointments.filter(appointment => isPreviousAppointment(appointment));
-}
 
 function computeInitialActiveTab(activeAppointment ?: Appointment) : Tab {
   if(!activeAppointment) {
@@ -150,6 +117,7 @@ export const PatientAppointmentsInfo = React.memo((props : PatientAppointmentsIn
                 key={appointment.id}
                 appointment={appointment}
                 isActive={activeAppointment?.id === appointment.id}
+                data-cy={cypressDataSelector("appointmentListEntry")}
               />)
           }
         </AppointmentsList>

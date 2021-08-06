@@ -49,7 +49,7 @@ export function PatientDetailsPage() : JSX.Element {
       {
         <SpinnerWrapper isLoading={dataIsLoading}>
           <Link to="/dashboard/calendar">
-            <LeftArrowIcon />
+            <LeftArrowIcon data-cy="patientDetailsLeftArrowIcon" />
           </Link>
 
           <PatientInfo 

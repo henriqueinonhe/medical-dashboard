@@ -25,7 +25,7 @@ module.exports = (on, config) => {
   // `config` is the resolved Cypress config
   
   config.env.API_BASE_URL = process.env.API_BASE_URL;
-  config.baseUrl = process.env.API_BASE_URL;
+  config.env.TEST_ENVIRONMENT = process.env.TEST_ENVIRONMENT;
 
   return config;
 }

@@ -51,7 +51,6 @@ export class PatientsService {
   };
 
   public static displayableDocument(document : string) : string {
-    //TODO Validate Input
     const firstPart = document.slice(0, 3);
     const secondPart = document.slice(3, 6);
     const thirdPart = document.slice(6, 9);
@@ -61,8 +60,6 @@ export class PatientsService {
   }
 
   public static displayableHealthSystemId(healthSystemId : string) : string {
-    //TODO Validate Input
-
     const firstPart = healthSystemId.slice(0, 3);
     const secondPart = healthSystemId.slice(3, 6);
     const finalPart = healthSystemId.slice(6);

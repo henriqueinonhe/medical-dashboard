@@ -49,13 +49,6 @@ export function randomNullable<T>(value : T, probability = 0.333) : T | null {
 }
 
 export function randomAppointmentStatus(startTime : string) : AppointmentStatus {
-  const statusesWithout : Array<AppointmentStatus> = [
-    "absent",
-    "cancelled",
-    "completed",
-    "pending"
-  ];
-
   if(Dayjs(startTime).isBefore(Dayjs())) {
     return sample(["cancelled", "completed", "absent"])!;
   }

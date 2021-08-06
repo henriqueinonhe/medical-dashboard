@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { AllowedTime, allowedTimeToCssGridLabel, dateToAllowedTime, dateToWeekday, Weekday } from "../helpers/calendarHelper";
 import { Appointment, AppointmentsService } from "../services/AppointmentsService";
 import { AppointmentStatusChip } from "./AppointmentStatusChip";
+import { cypressDataSelector, generateAppointmentCardCypressDataSelector } from "../helpers/cypressHelper";
 
 interface ContainerProps {
   weekday : Weekday;
@@ -147,6 +148,7 @@ export const AppointmentCard = React.memo((props : AppointmentCardProps) => {
       startTime={formattedStartTime}
       endTime={formattedEndTime}
       to={`/patientDetails/${patientId}/appointments/${appointmentId}`}
+      data-cy={generateAppointmentCardCypressDataSelector(weekday, formattedStartTime, formattedEndTime)}
     >
       <Content>
         <PatientNameField>{patientName}</PatientNameField>
