@@ -75,6 +75,8 @@ There are two environment variables:
 - **API_BASE_URL** - Self explanatory
 - **TEST_ENVIRONMENT** - Must be set to true when running cypress tests.
 
+As environment variables are actually replaced (textually, just like C `#define`) by webpack, each time you update an environment variable value you **MUST** restart the server for the update to take effect.
+
 ## 5 Running
 
 For a development environment:
