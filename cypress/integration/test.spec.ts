@@ -266,7 +266,7 @@ describe("Doctor's Dashboard", () => {
 });
 
 describe("Patients Details", () => {
-  it.only("Patient Info", () => {
+  it("Patient Info", () => {
     const patient = randomPatient();
   
     cy.intercept({
@@ -294,7 +294,7 @@ describe("Patients Details", () => {
 
       cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
         .should("contain.text", displayableType)
-        .should("contain.text", displayableStatus)
+        .should("contain.text", displayableStatus);
     });
 
     cy.contains("Upcoming").click();
@@ -304,7 +304,7 @@ describe("Patients Details", () => {
 
       cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
         .parent()
-        .should("contain.text", displayableType)
+        .should("contain.text", displayableType);
     });
 
     cy.contains("History").click();
@@ -313,7 +313,7 @@ describe("Patients Details", () => {
       const displayableType = AppointmentsService.displayableAppointmentType[appointment.type];
 
       cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
-        .should("contain.text", displayableType)
+        .should("contain.text", displayableType);
     });
   });
 });

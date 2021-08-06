@@ -17,6 +17,7 @@
  */
 // eslint-disable-next-line no-unused-vars
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
 
 
@@ -28,4 +29,4 @@ module.exports = (on, config) => {
   config.env.TEST_ENVIRONMENT = process.env.TEST_ENVIRONMENT;
 
   return config;
-}
+};
