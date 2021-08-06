@@ -295,9 +295,6 @@ describe("Patients Details", () => {
       cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
         .should("contain.text", displayableType)
         .should("contain.text", displayableStatus)
-        .click();
-
-      cy.contains(appointment.notes);
     });
 
     cy.contains("Upcoming").click();
@@ -308,9 +305,6 @@ describe("Patients Details", () => {
       cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
         .parent()
         .should("contain.text", displayableType)
-        .click();
-
-      cy.contains(appointment.notes);
     });
 
     cy.contains("History").click();
@@ -320,9 +314,6 @@ describe("Patients Details", () => {
 
       cy.contains(Dayjs(appointment.startTime).format("MM/DD/YYYY HH:mm"))
         .should("contain.text", displayableType)
-        .click();
-
-      cy.contains(appointment.notes);
     });
   });
 });
